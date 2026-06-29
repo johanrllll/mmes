@@ -183,7 +183,7 @@
             <thead>
                 <tr>
                     <th>Matière</th>
-                    <th id="th-coef" style="display: none;">Coefficient</th>
+                    <th>Coefficient</th>
                     <th>Note /20</th>
                 </tr>
             </thead>
@@ -197,25 +197,20 @@
     </div>
 
     <script>
-        // Banques de matières et structures
         const matieresCollegeBase = ["Français", "Mathématiques", "Physique-Chimie", "SVT", "Anglais", "Informatique", "Histoire-Géographie", "EDHC", "EPS", "Conduite"];
         
-        // Coefs par défaut si besoin (ici mis à 1 partout pour le collège, modifiables selon ton choix)
         function générerMatieres() {
             const classe = document.getElementById("classe").value;
             const serieBox = document.getElementById("box-serie");
             const serie = document.getElementById("serie").value;
             const corps = document.getElementById("corps-table");
-            const thCoef = document.getElementById("th-coef");
             
             corps.innerHTML = "";
             let listeMatieres = [];
-            let afficherCoef = false;
 
             // Logique Collège
             if (["6eme", "5eme", "4eme", "3eme"].includes(classe)) {
                 serieBox.style.display = "none";
-                thCoef.style.display = "none";
                 listeMatieres = [...matieresCollegeBase];
                 if (classe === "4eme" || classe === "3eme") {
                     listeMatieres.push("Espagnol", "Allemand");
@@ -224,22 +219,16 @@
             // Logique Lycée
             else {
                 serieBox.style.display = "block";
-                afficherCoef = true;
-                thCoef.style.display = "block";
-
                 let baseLycee = ["Français", "Mathématiques", "Physique-Chimie", "SVT", "Anglais", "Histoire-Géographie", "EPS", "Conduite"];
                 
-                // Ajout de la philosophie en 1ère et Tle
                 if (classe === "premiere" || classe === "terminale") {
                     baseLycee.unshift("Philosophie"); 
                 }
 
-                // Gestion des langues selon la série
                 if (serie === "A") {
                     baseLycee.push("Espagnol", "Allemand");
                 }
 
-                // Transformation en objet avec coef (par défaut mis à 2 pour l'exemple, ajustable)
                 listeMatieres = baseLycee;
             }
 
@@ -251,11 +240,11 @@
                 cellNom.textContent = mat;
                 row.appendChild(cellNom);
 
-                if (afficherCoef) {
-                    let cellCoef = document.createElement("td");
-                    cellCoef.innerHTML = `<input type="number" id="coef-${index}" value="2" min="1" max="10">`;
-                    row.appendChild(cellCoef);
-                }
+                // La colonne coefficient s'affiche partout désormais
+                let cellCoef = document.createElement("td");
+                let defaultCoef = ["6eme", "5eme", "4eme", "3eme"].includes(classe) ? 1 : 2;
+                cellCoef.innerHTML = `<input type="number" id="coef-${index}" value="${defaultCoef}" min="1" max="10">`;
+                row.appendChild(cellCoef);
 
                 let cellNote = document.createElement("td");
                 cellNote.innerHTML = `<input type="number" id="note-${index}" step="0.25" min="0" max="20" placeholder="Note">`;
@@ -269,7 +258,6 @@
             const classe = document.getElementById("classe").value;
             const serieBox = document.getElementById("box-serie");
             const serieSelect = document.getElementById("serie");
-            const ancienChoix = serieSelect.value;
 
             if (classe === "seconde") {
                 serieBox.style.display = "block";
@@ -288,8 +276,6 @@
         function CalculerMoyenne() {
             const corps = document.getElementById("corps-table");
             const rows = corps.querySelectorAll("tr");
-            const classe = document.getElementById("classe").value;
-            const estLycee = !["6eme", "5eme", "4eme", "3eme"].includes(classe);
             
             let totalPoints = 0;
             let totalCoefs = 0;
@@ -301,7 +287,7 @@
                 const coefInput = document.getElementById(`coef-${index}`);
                 
                 let noteVal = noteInput.value.trim();
-                let coef = estLycee ? parseFloat(coefInput.value) || 1 : 1;
+                let coef = parseFloat(coefInput.value) || 1;
 
                 if (noteVal === "") {
                     caseVideDetectee = true;
@@ -318,7 +304,6 @@
             const resultBox = document.getElementById("resultat");
             resultBox.style.display = "block";
 
-            // Règle d'or : si une case est vide -> NC (Non Classé)
             if (caseVideDetectee || !aDesNotes) {
                 resultBox.textContent = "Moyenne Générale : MC (Non Classé)";
                 resultBox.className = "result-box nc";
@@ -329,7 +314,6 @@
             }
         }
 
-        // Initialisation au premier chargement
         GérerChangementClasse();
     </script>
 </body>
