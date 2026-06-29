@@ -24,6 +24,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            position: relative;
+            box-sizing: border-box;
         }
 
         header {
@@ -58,6 +61,7 @@
             box-shadow: 0 8px 16px rgba(0,0,0,0.05);
             border: 1px solid #e0e0e0;
             box-sizing: border-box;
+            margin-bottom: 60px; /* Espace pour ne pas cacher le texte du bas */
         }
 
         .selectors {
@@ -208,6 +212,28 @@
             background-color: #e2e8f0;
             color: #475569;
         }
+
+        /* Style de la signature tout en bas */
+        footer {
+            margin-top: auto;
+            padding: 20px 0 10px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #777;
+            letter-spacing: 1px;
+        }
+
+        footer a {
+            color: #ff0050; /* Couleur typique de TikTok */
+            text-decoration: none;
+            border-bottom: 1px dashed #ff0050;
+            transition: opacity 0.2s;
+        }
+
+        footer a:hover {
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -271,6 +297,10 @@
             <div id="badge-decision" class="badge">STATUT</div>
         </div>
     </div>
+
+    <footer>
+        by <a href="https://www.tiktok.com/@lekj006?_r=1&_t=ZS-97c6P9x4rhY" target="_blank">lk</a>
+    </footer>
 
     <script>
         const matieresBase = ["Français", "Mathématiques", "Physique-Chimie", "SVT", "Anglais", "Informatique", "Histoire-Géographie", "EDHC", "EPS", "Conduite"];
