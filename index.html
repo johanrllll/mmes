@@ -3,211 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mmes - Tableau de Bord Scolaire</title>
+    <title>Mmes - Bulletin Annuel</title>
     <style>
         :root {
-            --bg-dark: #0f172a; /* Bleu-noir ardoise très moderne */
-            --card-bg: #ffffff; /* Cartes blanches pour un fort contraste */
-            --text-dark: #1e293b;
-            --text-light: #f8fafc;
-            --primary-blue: #2563eb; /* Bleu percutant */
-            --primary-hover: #1d4ed8;
-            --success-green: #10b981; /* Vert réussite */
-            --danger-red: #ef4444; /* Rouge refusé */
-            --border-color: #e2e8f0;
+            --primary: #2d5a27; /* Vert tableau d'école */
+            --secondary: #d9a05b; /* Couleur bois/crayon */
+            --bg: #fdfaf6; /* Couleur papier/cahier */
+            --text: #333;
+            --card-bg: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
         }
 
         header {
             text-align: center;
             margin-bottom: 25px;
+            border-bottom: 4px dashed var(--secondary);
+            padding-bottom: 10px;
             width: 100%;
-            max-width: 650px;
+            max-width: 950px;
         }
 
         header h1 {
-            color: var(--text-light);
-            font-size: 2.4rem;
+            color: var(--primary);
             margin: 0;
-            font-weight: 800;
-            letter-spacing: -1px;
+            font-size: 2.3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         header p {
-            font-size: 1rem;
-            color: #94a3b8;
+            font-style: italic;
+            color: #666;
             margin: 5px 0 0 0;
         }
 
         .container {
             width: 100%;
-            max-width: 650px;
+            max-width: 950px;
             background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
             box-sizing: border-box;
         }
 
-        .selectors-grid {
+        .selectors {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        @media (max-width: 480px) {
-            .selectors-grid {
-                grid-template-columns: 1fr;
-            }
+            margin-bottom: 20px;
         }
 
         label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
+            font-weight: bold;
             display: block;
-            color: #64748b;
+            margin-bottom: 5px;
+            color: var(--primary);
         }
 
         select {
             width: 100%;
-            padding: 12px;
-            background-color: #f8fafc;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-dark);
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
             outline: none;
-            transition: all 0.2s ease;
         }
 
         select:focus {
-            border-color: var(--primary-blue);
-            background-color: #fff;
+            border-color: var(--primary);
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 25px;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
         }
 
         th {
-            padding: 12px 10px;
-            font-size: 0.8rem;
+            background-color: var(--primary);
+            color: white;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #64748b;
-            border-bottom: 2px solid var(--border-color);
-            text-align: left;
         }
 
-        th:nth-child(2), td:nth-child(2), th:nth-child(3), td:nth-child(3) {
+        th:not(:first-child), td:not(:first-child) {
             text-align: center;
         }
 
-        td {
-            padding: 10px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.95rem;
-            font-weight: 500;
+        .avg-row {
+            background-color: #f1f7f0;
+            font-weight: bold;
+            border-top: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .avg-row td {
+            padding: 14px 10px;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
         }
 
         input[type="number"] {
-            width: 70px;
-            padding: 8px;
-            background-color: #f1f5f9;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-dark);
+            width: 65px;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             text-align: center;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        input[type="number"]:focus {
-            border-color: var(--primary-blue);
-            background-color: #fff;
-            box-shadow: 0 0 0 3px rgba(37, 99, 117, 0.15);
         }
 
         .btn-calc {
             display: block;
             width: 100%;
-            padding: 16px;
-            background-color: var(--primary-blue);
+            padding: 15px;
+            background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: background 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn-calc:hover {
-            background-color: var(--primary-hover);
+            background-color: #1e3d1a;
         }
 
-        .result-panel {
+        .annual-panel {
             margin-top: 25px;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 25px;
+            border-radius: 8px;
             text-align: center;
-            display: none;
             background-color: #f8fafc;
-            border: 1px solid var(--border-color);
+            border: 2px solid #e2e8f0;
+            display: none;
         }
 
-        .moyenne-text {
-            font-size: 1.8rem;
+        .annual-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .annual-value {
+            font-size: 2.5rem;
             font-weight: 800;
-            margin-bottom: 10px;
+            color: var(--text);
+            margin-bottom: 15px;
         }
 
-        .status-badge {
+        .badge {
             display: inline-block;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 8px 25px;
+            border-radius: 30px;
+            font-size: 1.1rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .status-badge.passe {
+        .badge.pass {
             background-color: #d1fae5;
-            color: var(--success-green);
+            color: var(--success);
         }
 
-        .status-badge.refuse {
+        .badge.fail {
             background-color: #fee2e2;
-            color: var(--danger-red);
+            color: var(--danger);
         }
 
-        .status-badge.nc {
-            background-color: #f1f5f9;
-            color: #64748b;
+        .badge.nc {
+            background-color: #e2e8f0;
+            color: #475569;
         }
     </style>
 </head>
@@ -215,14 +214,14 @@
 
     <header>
         <h1>Mmes</h1>
-        <p>Gestionnaire de Moyennes Épuré</p>
+        <p>Carnet de Notes Annuel</p>
     </header>
 
     <div class="container">
-        <div class="selectors-grid">
+        <div class="selectors">
             <div>
-                <label for="classe">Classe</label>
-                <select id="classe" onchange="changerConfiguration()">
+                <label for="classe">Classe :</label>
+                <select id="classe" onchange="GérerChangementClasse()">
                     <option value="6eme">6ème</option>
                     <option value="5eme">5ème</option>
                     <option value="4eme">4ème</option>
@@ -232,67 +231,67 @@
                     <option value="terminale">Terminale</option>
                 </select>
             </div>
-            <div>
-                <label for="trimestre">Trimestre</label>
-                <select id="trimestre" onchange="chargerTrimestre()">
-                    <option value="T1">1er Trimestre</option>
-                    <option value="T2">2ème Trimestre</option>
-                    <option value="T3">3ème Trimestre</option>
-                </select>
-            </div>
-            <div id="box-serie" style="visibility: hidden;">
-                <label for="serie">Série</label>
-                <select id="serie" onchange="changerConfiguration()">
-                    <!-- Injecté par JS -->
-                </select>
+            <div id="box-serie" style="display: none;">
+                <label for="serie">Série :</label>
+                <select id="serie" onchange="GérerChangementClasse()">
+                    </select>
             </div>
         </div>
 
-        <table id="table-matieres">
-            <thead>
-                <tr>
-                    <th>Matière</th>
-                    <th>Coefficient</th>
-                    <th>Note / 20</th>
-                </tr>
-            </thead>
-            <tbody id="corps-table">
-                <!-- Rempli par JS -->
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matière</th>
+                        <th>Coef</th>
+                        <th>Trimestre 1</th>
+                        <th>Trimestre 2</th>
+                        <th>Trimestre 3</th>
+                    </tr>
+                </thead>
+                <tbody id="corps-table">
+                    </tbody>
+                <tfoot>
+                    <tr class="avg-row">
+                        <td>Moyenne Trimestrielle</td>
+                        <td>-</td>
+                        <td id="avg-t1">-</td>
+                        <td id="avg-t2">-</td>
+                        <td id="avg-t3">-</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
 
-        <button class="btn-calc" onclick="CalculerMoyenne()">Calculer le Bilan</button>
+        <button class="btn-calc" onclick="CalculerTout()">Calculer le Bilan Annuel</button>
 
-        <div id="resultat-panel" class="result-panel">
-            <div id="moyenne-val" class="moyenne-text">00.00 / 20</div>
-            <div id="status-badge" class="status-badge">Statut</div>
+        <div id="panel-annuel" class="annual-panel">
+            <div class="annual-title">Moyenne Générale Annuelle</div>
+            <div id="valeur-annuelle" class="annual-value">--.-- / 20</div>
+            <div id="badge-decision" class="badge">STATUT</div>
         </div>
     </div>
 
     <script>
-        const matieresCollegeBase = ["Français", "Mathématiques", "Physique-Chimie", "SVT", "Anglais", "Informatique", "Histoire-Géographie", "EDHC", "EPS", "Conduite"];
-        
-        // Objet pour sauvegarder temporairement les notes saisies par l'utilisateur
-        let memoireNotes = { T1: {}, T2: {}, T3: {} };
+        const matieresBase = ["Français", "Mathématiques", "Physique-Chimie", "SVT", "Anglais", "Informatique", "Histoire-Géographie", "EDHC", "EPS", "Conduite"];
 
-        function générerInterfaceMatieres() {
+        function générerMatieres() {
             const classe = document.getElementById("classe").value;
             const serieBox = document.getElementById("box-serie");
             const serie = document.getElementById("serie").value;
             const corps = document.getElementById("corps-table");
-            const trimestre Actuel = document.getElementById("trimestre").value;
             
             corps.innerHTML = "";
             let listeMatieres = [];
 
             if (["6eme", "5eme", "4eme", "3eme"].includes(classe)) {
-                serieBox.style.visibility = "hidden";
-                listeMatieres = [...matieresCollegeBase];
+                serieBox.style.display = "none";
+                listeMatieres = [...matieresBase];
                 if (classe === "4eme" || classe === "3eme") {
                     listeMatieres.push("Espagnol", "Allemand");
                 }
             } else {
-                serieBox.style.visibility = "visible";
+                serieBox.style.display = "block";
                 let baseLycee = ["Français", "Mathématiques", "Physique-Chimie", "SVT", "Anglais", "Histoire-Géographie", "EPS", "Conduite"];
                 
                 if (classe === "premiere" || classe === "terminale") {
@@ -313,101 +312,118 @@
 
                 let cellCoef = document.createElement("td");
                 let defaultCoef = ["6eme", "5eme", "4eme", "3eme"].includes(classe) ? 1 : 2;
-                cellCoef.innerHTML = `<input type="number" id="coef-${index}" value="${defaultCoef}" min="1" max="10">`;
+                cellCoef.innerHTML = `<input type="number" id="coef-${index}" value="${defaultCoef}" min="1" max="10" oninput="recalculerAutomatique()">`;
                 row.appendChild(cellCoef);
 
-                // Récupération de la note si elle était déjà enregistrée dans la mémoire pour ce trimestre
-                let noteSauvegardee = memoireNotes[trimestreActuel][mat] || "";
+                let cellT1 = document.createElement("td");
+                cellT1.innerHTML = `<input type="number" id="note-t1-${index}" step="0.25" min="0" max="20" placeholder="--" oninput="recalculerAutomatique()">`;
+                row.appendChild(cellT1);
 
-                let cellNote = document.createElement("td");
-                cellNote.innerHTML = `<input type="number" id="note-${index}" data-matiere="${mat}" step="0.25" min="0" max="20" placeholder="--" value="${noteSauvegardee}" oninput="sauvegarderNote('${mat}', this.value)">`;
-                row.appendChild(cellNote);
+                let cellT2 = document.createElement("td");
+                cellT2.innerHTML = `<input type="number" id="note-t2-${index}" step="0.25" min="0" max="20" placeholder="--" oninput="recalculerAutomatique()">`;
+                row.appendChild(cellT2);
+
+                let cellT3 = document.createElement("td");
+                cellT3.innerHTML = `<input type="number" id="note-t3-${index}" step="0.25" min="0" max="20" placeholder="--" oninput="recalculerAutomatique()">`;
+                row.appendChild(cellT3);
 
                 corps.appendChild(row);
             });
+            
+            recalculerAutomatique();
         }
 
-        function sauvegarderNote(matiere, valeur) {
-            const trimestreActuel = document.getElementById("trimestre").value;
-            memoireNotes[trimestreActuel][matiere] = valeur;
-        }
-
-        function chargerTrimestre() {
-            générerInterfaceMatieres();
-            document.getElementById("resultat-panel").style.display = "none";
-        }
-
-        function changerConfiguration() {
+        function GérerChangementClasse() {
             const classe = document.getElementById("classe").value;
+            const serieBox = document.getElementById("box-serie");
             const serieSelect = document.getElementById("serie");
 
             if (classe === "seconde") {
+                serieBox.style.display = "block";
                 serieSelect.innerHTML = '<option value="A">Série A</option><option value="C">Série C</option>';
             } else if (classe === "premiere" || classe === "terminale") {
+                serieBox.style.display = "block";
                 serieSelect.innerHTML = '<option value="A">Série A</option><option value="C">Série C</option><option value="D">Série D</option>';
+            } else {
+                serieBox.style.display = "none";
             }
             
-            // Réinitialiser la mémoire lors d'un changement de classe ou série pour éviter les conflits de matières
-            memoireNotes = { T1: {}, T2: {}, T3: {} };
-            générerInterfaceMatieres();
-            document.getElementById("resultat-panel").style.display = "none";
+            générerMatieres();
+            document.getElementById("panel-annuel").style.display = "none";
         }
 
-        function CalculerMoyenne() {
-            const corps = document.getElementById("corps-table");
-            const rows = corps.querySelectorAll("tr");
-            
-            let totalPoints = 0;
-            let totalCoefs = 0;
+        function calculerMoyenneTrimestre(prefix) {
+            const rows = document.querySelectorAll("#corps-table tr");
+            let points = 0;
+            let coefs = 0;
+            let vide = false;
             let aDesNotes = false;
-            let caseVideDetectee = false;
 
             rows.forEach((row, index) => {
-                const noteInput = document.getElementById(`note-${index}`);
-                const coefInput = document.getElementById(`coef-${index}`);
+                const noteIn = document.getElementById(`note-${prefix}-${index}`);
+                const coefIn = document.getElementById(`coef-${index}`);
                 
-                let noteVal = noteInput.value.trim();
-                let coef = parseFloat(coefInput.value) || 1;
+                let noteVal = noteIn.value.trim();
+                let coef = parseFloat(coefIn.value) || 1;
 
                 if (noteVal === "") {
-                    caseVideDetectee = true;
+                    vide = true;
                 } else {
                     let note = parseFloat(noteVal);
                     if (!isNaN(note) && note >= 0 && note <= 20) {
-                        totalPoints += note * coef;
-                        totalCoefs += coef;
+                        points += note * coef;
+                        coefs += coef;
                         aDesNotes = true;
                     }
                 }
             });
 
-            const panel = document.getElementById("resultat-panel");
-            const moyenneVal = document.getElementById("moyenne-val");
-            const badge = document.getElementById("status-badge");
+            if (vide || !aDesNotes) return null;
+            return points / coefs;
+        }
+
+        function recalculerAutomatique() {
+            const m1 = calculerMoyenneTrimestre("t1");
+            const m2 = calculerMoyenneTrimestre("t2");
+            const m3 = calculerMoyenneTrimestre("t3");
+
+            document.getElementById("avg-t1").textContent = m1 !== null ? m1.toFixed(2) : "MC";
+            document.getElementById("avg-t2").textContent = m2 !== null ? m2.toFixed(2) : "MC";
+            document.getElementById("avg-t3").textContent = m3 !== null ? m3.toFixed(2) : "MC";
+        }
+
+        function CalculerTout() {
+            recalculerAutomatique();
             
+            const m1 = calculerMoyenneTrimestre("t1");
+            const m2 = calculerMoyenneTrimestre("t2");
+            const m3 = calculerMoyenneTrimestre("t3");
+
+            const panel = document.getElementById("panel-annuel");
+            const valAnnuelle = document.getElementById("valeur-annuelle");
+            const badge = document.getElementById("badge-decision");
+
             panel.style.display = "block";
 
-            if (caseVideDetectee || !aDesNotes) {
-                moyenneVal.textContent = "Moyenne Indisponible";
+            if (m1 === null || m2 === null || m3 === null) {
+                valAnnuelle.textContent = "Bilan Incomplet";
                 badge.textContent = "MC (Non Classé)";
-                badge.className = "status-badge nc";
+                badge.className = "badge nc";
             } else {
-                let moyenne = totalPoints / totalCoefs;
-                moyenneVal.textContent = `${moyenne.toFixed(2)} / 20`;
-                
-                // Vérification de la condition de passage à 10.00
-                if (moyenne >= 10.00) {
-                    badge.textContent = "Passé";
-                    badge.className = "status-badge passe";
+                let moyenneAnnuelle = (m1 + m2 + m3) / 3;
+                valAnnuelle.textContent = `${moyenneAnnuelle.toFixed(2)} / 20`;
+
+                if (moyenneAnnuelle >= 10.00) {
+                    badge.textContent = "PASSÉ";
+                    badge.className = "badge pass";
                 } else {
-                    badge.textContent = "Refusé";
-                    badge.className = "status-badge refuse";
+                    badge.textContent = "REFUSÉ";
+                    badge.className = "badge fail";
                 }
             }
         }
 
-        // Initialisation par défaut
-        changerConfiguration();
+        GérerChangementClasse();
     </script>
 </body>
 </html>
