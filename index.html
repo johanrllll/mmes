@@ -233,7 +233,7 @@
             </div>
             <div id="box-serie" style="display: none;">
                 <label for="serie">Série :</label>
-                <select id="serie" onchange="GérerChangementClasse()">
+                <select id="serie" onchange="GérerChangementSerie()">
                     </select>
             </div>
         </div>
@@ -348,6 +348,11 @@
                 serieBox.style.display = "none";
             }
             
+            générerMatieres();
+            document.getElementById("panel-annuel").style.display = "none";
+        }
+
+        function GérerChangementSerie() {
             générerMatieres();
             document.getElementById("panel-annuel").style.display = "none";
         }
