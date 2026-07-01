@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mmes Pro - Système de Gestion & Simulation Scolaire</title>
+    <title>Mmes Pro - Système Global Scolaire & International</title>
     <style>
         :root {
             --primary: #1e4620;
@@ -674,6 +674,15 @@
             <div class="card" style="margin-bottom: 20px;">
                 <h2 style="margin-top:0; color:var(--primary);" id="sim-titre-examen">Simulation d'Examen d'État</h2>
                 <p style="color:var(--text-muted); margin:0;">Configure tes projections de notes pour analyser tes chances de décrocher le diplôme officiel avec mention.</p>
+                
+                <div style="margin-top:15px; margin-bottom:5px; max-width:400px;">
+                    <label for="select-registre-exam">Sélectionner le Registre Francophone</label>
+                    <select id="select-registre-exam" onchange="changerRegistreExamen()">
+                        <option value="AUTO">Automatique (Selon ton niveau actuel)</option>
+                        <option value="bac_senegal_s2">Sénégal : Baccalauréat Série S2</option>
+                        <option value="bfem_senegal">Sénégal : BFEM (Équivalent BEPC)</option>
+                    </select>
+                </div>
             </div>
 
             <div class="simulator-grid">
@@ -736,7 +745,7 @@
     </footer>
 
     <script>
-                // =========================================================================
+        // =========================================================================
         // CONSTANTES & BASES DE DONNÉES DU SYSTÈME SCOLAIRE (CONFORME MENA CÔTE D'IVOIRE)
         // =========================================================================
         const MATIERES_COLLEGE = [
@@ -766,15 +775,15 @@
             
             "terminaleA1": { "Philosophie": 5, "Français": 4, "Mathématiques": 3, "Anglais": 3, "Histoire-Géographie": 3, "Deuxième Langue (All/Esp)": 3, "EPS": 1, "Conduite": 1, "SVT": 1 },
             "terminaleA2": { "Philosophie": 5, "Français": 4, "Mathématiques": 1, "Anglais": 4, "Histoire-Géographie": 3, "Deuxième Langue (All/Esp)": 4, "EPS": 1, "Conduite": 1 },
-            "terminaleC": { "Mathématiques": 8, "Physique-Chimie": 5, "Philosophy": 2, "Français": 2, "SVT": 2, "Anglais": 2, "Histoire-Géographie": 2, "EPS": 1, "Conduite": 1 },
+            "terminaleC": { "Mathématiques": 8, "Physique-Chimie": 5, "Philosophie": 2, "Français": 2, "SVT": 2, "Anglais": 2, "Histoire-Géographie": 2, "EPS": 1, "Conduite": 1 },
             "terminaleD": { "Mathématiques": 4, "Physique-Chimie": 4, "SVT": 4, "Philosophie": 2, "Français": 2, "Anglais": 2, "Histoire-Géographie": 2, "EPS": 1, "Conduite": 1 }
         };
 
-        // Configuration pour le simulateur d'examens d'État officiels
+        // Configuration pour le simulateur d'examens d'État officiels (Région Francophone)
         const STRUCTURES_EXAMENS = {
             "3eme": {
-                nom: "Brevet d'Études du Premier Cycle (BEPC)",
-                seuil: 180, // Seuil sur 360 points (coeff total équivalent à 18)
+                nom: "Brevet d'Études du Premier Cycle (BEPC) - CI",
+                seuil: 180, 
                 epreuves: [
                     { nom: "Composition Française", coef: 2 },
                     { nom: "Mathématiques", coef: 2 },
@@ -788,8 +797,8 @@
                 ]
             },
             "terminaleA": {
-                nom: "Baccalauréat - Séries Littéraires (A1 / A2)",
-                seuil: 200, // Seuil sur 400 points
+                nom: "Baccalauréat - Séries Littéraires (A1 / A2) - CI",
+                seuil: 200, 
                 epreuves: [
                     { nom: "Philosophie", coef: 5 },
                     { nom: "Français (Écrit + Oral)", coef: 5 },
@@ -801,8 +810,8 @@
                 ]
             },
             "terminaleD": {
-                nom: "Baccalauréat - Série D (Sciences Scientifiques)",
-                seuil: 220, // Seuil sur 440 points
+                nom: "Baccalauréat - Série D (Sciences) - CI",
+                seuil: 220, 
                 epreuves: [
                     { nom: "Mathématiques", coef: 4 },
                     { nom: "Physique-Chimie", coef: 4 },
@@ -815,8 +824,8 @@
                 ]
             },
             "terminaleC": {
-                nom: "Baccalauréat - Série C (Sciences Exactes)",
-                seuil: 240, // Seuil sur 480 points
+                nom: "Baccalauréat - Série C (Maths/Physique) - CI",
+                seuil: 240, 
                 epreuves: [
                     { nom: "Mathématiques", coef: 8 },
                     { nom: "Physique-Chimie", coef: 5 },
@@ -827,11 +836,37 @@
                     { nom: "Anglais", coef: 2 },
                     { nom: "EPS", coef: 1 }
                 ]
+            },
+            "bac_senegal_s2": {
+                nom: "Baccalauréat Sénégal (Série S2 - Sciences Expérimentales)",
+                seuil: 140, // Seuil calculé sur un total de coefficients de 25 (Note moyenne équivalente >= 10/20)
+                epreuves: [
+                    { nom: "Sciences de la Vie et de la Terre", coef: 6 },
+                    { nom: "Mathématiques", coef: 5 },
+                    { nom: "Sciences Physiques", coef: 5 },
+                    { nom: "Philosophie", coef: 2 },
+                    { nom: "Français", coef: 3 },
+                    { nom: "Histoire-Géographie", coef: 2 },
+                    { nom: "Anglais", coef: 2 }
+                ]
+            },
+            "bfem_senegal": {
+                nom: "BFEM Sénégal (Brevet de Fin d'Études Moyennes)",
+                seuil: 90, // Seuil basé sur un total de coefficients de 18
+                epreuves: [
+                    { nom: "Composition Française", coef: 2 },
+                    { nom: "Mathématiques", coef: 4 },
+                    { nom: "Sciences Physiques", coef: 2 },
+                    { nom: "Anglais (Écrit + Oral)", coef: 3 },
+                    { nom: "Histoire-Géographie", coef: 2 },
+                    { nom: "SVT", coef: 2 },
+                    { nom: "Dictée & Questions", coef: 2 }
+                ]
             }
         };
 
         // =========================================================================
-        // ARCHITECTURE GESTIONNAIRE D'ÉTAT MULTI-PROFILS (LOCALSTORAGE CENTRALISÉ)
+        // ARCHITECTURE GESTIONNAIRE D'ÉTAT MULTI-PROFILS
         // =========================================================================
         let SystemState = {
             profils: {
@@ -841,14 +876,15 @@
             themeActif: "light"
         };
 
-        // Initialisation de la mémoire globale
+        let registreForce = null;
+
         function chargerSysteme() {
             const sauvegarde = localStorage.getItem('Mmes_Pro_System_v3');
             if (sauvegarde) {
                 try {
                     SystemState = JSON.parse(sauvegarde);
                 } catch(e) {
-                    console.error("Erreur lecture stockage, réinitialisation forcée.", e);
+                    console.error("Erreur lecture stockage.", e);
                 }
             }
             if (!SystemState.profils || Object.keys(SystemState.profils).length === 0) {
@@ -868,6 +904,12 @@
 
         function sauvegarderSysteme() {
             localStorage.setItem('Mmes_Pro_System_v3', JSON.stringify(SystemState));
+        }
+
+        function changerRegistreExamen() {
+            const choix = document.getElementById("select-registre-exam").value;
+            registreForce = choix === "AUTO" ? null : choix;
+            genererTableauSimulateur();
         }
 
         // =========================================================================
@@ -941,7 +983,6 @@
 
             let listeFinalMatieres = [];
 
-            // Algorithme de filtrage des disciplines d'Afrique de l'Ouest
             if (["6eme", "5eme", "4eme", "3eme"].includes(classe)) {
                 listeFinalMatieres = [...MATIERES_COLLEGE];
                 if (["4eme", "3eme"].includes(classe)) {
@@ -961,7 +1002,6 @@
                 listeFinalMatieres = baseLycee;
             }
 
-            // Génération de la grille des modules d'évaluation
             listeFinalMatieres.forEach((matiere, index) => {
                 let r = document.createElement("tr");
 
@@ -969,7 +1009,6 @@
                 tdNom.textContent = matiere;
                 r.appendChild(tdNom);
 
-                // Détermination intelligente des coefficients MENA
                 let configurationCle = classe === "seconde" || classe === "premiere" || classe === "terminale" ? classe + serie : classe;
                 let banqueCoeffs = COEFFICIENTS_OFFICIELS[configurationCle] || {};
                 let coefDefaut = banqueCoeffs[matiere] || 2;
@@ -978,7 +1017,6 @@
                 tdCoef.innerHTML = `<input type="number" id="coef-${index}" value="${coefDefaut}" min="1" max="10" oninput="traiterCalculsRecurrents()">`;
                 r.appendChild(tdCoef);
 
-                // Modules de calcul Interro / Devoirs Surveillés (DS) pour chaque trimestre
                 for (let t = 1; t <= 3; t++) {
                     let idInterro = `${classe}_${serie}_t${t}_${matiere}_int`;
                     let idDS = `${classe}_${serie}_t${t}_${matiere}_ds`;
@@ -1030,7 +1068,6 @@
             traiterCalculsRecurrents();
         }
 
-        // Calcule la moyenne pondérée d'une matière (Moyenne Interros + 2 * DS) / 3
         function extraireMoyenneMatierePeriode(indexMatiere, tIndex) {
             const intInput = document.getElementById(`int-t${tIndex}-${indexMatiere}`);
             const dsInput = document.getElementById(`ds-t${tIndex}-${indexMatiere}`);
@@ -1045,11 +1082,9 @@
             let intNote = valInt !== "" ? parseFloat(valInt) : null;
             let dsNote = valDS !== "" ? parseFloat(valDS) : null;
 
-            // Système de secours si l'un des deux devoirs manque
             if (intNote !== null && dsNote === null) return intNote;
             if (dsNote !== null && intNote === null) return dsNote;
             
-            // Règle de pondération officielle ivoirienne
             return (intNote + (dsNote * 2)) / 3;
         }
 
@@ -1065,7 +1100,6 @@
             document.getElementById("tfoot-coefs").textContent = totalCoefs;
             document.getElementById("stat-total-coef").textContent = totalCoefs;
 
-            // Analyse par période trimestrielle
             let pointsCumulAnnuels = 0;
             let somCoefsT1 = 0, somPointsT1 = 0;
             let somCoefsT2 = 0, somPointsT2 = 0;
@@ -1086,7 +1120,6 @@
                 if(mt2 !== null) { somPointsT2 += mt2 * c; somCoefsT2 += c; extremesNotes.push(mt2); }
                 if(mt3 !== null) { somPointsT3 += mt3 * c; somCoefsT3 += c; extremesNotes.push(mt3); }
 
-                // Moyenne annuelle spécifique par matière
                 let diviseurMatiere = 0, sommeMatiere = 0;
                 if(mt1 !== null) { sommeMatiere += mt1; diviseurMatiere++; }
                 if(mt2 !== null) { sommeMatiere += mt2; diviseurMatiere++; }
@@ -1102,7 +1135,6 @@
                 }
             });
 
-            // Affichage des rendements de périodes
             let moyT1 = somCoefsT1 > 0 ? somPointsT1 / somCoefsT1 : null;
             let moyT2 = somCoefsT2 > 0 ? somPointsT2 / somCoefsT2 : null;
             let moyT3 = somCoefsT3 > 0 ? somPointsT3 / somCoefsT3 : null;
@@ -1146,7 +1178,6 @@
 
             panel.style.display = "block";
 
-            // Injection et animation graphique
             document.getElementById("lbl-t1").textContent = m1 ? m1.toFixed(2) + "/20" : "Non Classé";
             document.getElementById("bar-t1").style.width = m1 ? (m1 * 5) + "%" : "0%";
             document.getElementById("lbl-t2").textContent = m2 ? m2.toFixed(2) + "/20" : "Non Classé";
@@ -1155,7 +1186,7 @@
             document.getElementById("bar-t3").style.width = m3 ? (m3 * 5) + "%" : "0%";
 
             if (!m1 || !m2 || !m3) {
-                lblAnnuel.textContent = "Synthese Incomplète";
+                lblAnnuel.textContent = "Synthèse Incomplète";
                 decBadge.textContent = "Non Classé (Trimestre manquant)";
                 decBadge.className = "badge nc";
                 mentBadge.style.display = "none";
@@ -1174,9 +1205,8 @@
                 decBadge.className = "badge fail";
             }
 
-            // Calculateur de mentions des Conseils de Classe
             if (moyenneAnnuelle >= 16.00) {
-                mentBadge.textContent = "Excellent (Félicitations du Conseil)";
+                mentBadge.textContent = "Excellent (Félicitations)";
                 mentBadge.style.background = "#d1fae5"; mentBadge.style.color = "var(--success)";
             } else if (moyenneAnnuelle >= 14.00) {
                 mentBadge.textContent = "Très Bien (Tableau d'Honneur)";
@@ -1188,7 +1218,7 @@
                 mentBadge.textContent = "Passable";
                 mentBadge.style.background = "#f1f5f9"; mentBadge.style.color = "var(--text-muted)";
             } else {
-                mentBadge.textContent = "Insuffisant (Blâme de travail)";
+                mentBadge.textContent = "Insuffisant";
                 mentBadge.style.background = "#fee2e2"; mentBadge.style.color = "var(--danger)";
             }
 
@@ -1196,9 +1226,10 @@
         }
 
         // =========================================================================
-        // MODULE SIMULATEUR D'EXAMENS D'ÉTAT (BAC / BEPC)
+        // MODULE SIMULATEUR D'EXAMENS D'ÉTAT REGIONAUX & INTERNATIONAUX
         // =========================================================================
         function determinerexEpreuveType() {
+            if (registreForce) return registreForce;
             const classe = getProfilActif().classeActive;
             const serie = getProfilActif().serieActive;
 
@@ -1220,7 +1251,7 @@
             if (!typeExam) {
                 titre.textContent = "Simulateur indisponible";
                 corps.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">
-                    Le simulateur d'examen requiert d'activer d'abord une classe à examen (3ème ou Terminale) dans l'onglet Notes & Suivi.
+                    Le simulateur d'examen requiert d'activer d'abord une classe à examen (3ème ou Terminale) ou de sélectionner un registre spécifique.
                 </td></tr>`;
                 document.getElementById("sim-total-points").textContent = "--";
                 document.getElementById("sim-seuil-admissibilite").textContent = "";
@@ -1232,7 +1263,7 @@
 
             const examConfig = STRUCTURES_EXAMENS[typeExam];
             titre.textContent = `Simulateur : ${examConfig.nom}`;
-            document.getElementById("sim-seuil-admissibilite").textContent = `Seuil d'admissibilité : ${examConfig.seuil} points`;
+            document.getElementById("sim-seuil-admissibilite").textContent = `Seuil requis : ${examConfig.seuil} points`;
             
             corps.innerHTML = "";
 
@@ -1305,7 +1336,6 @@
                 return;
             }
 
-            // Calcul des coefficients globaux pour ramener la moyenne sur 20
             let coefTotal = examConfig.epreuves.reduce((acc, ep) => acc + ep.coef, 0);
             let moyenneEquivalente = cumulPoints / coefTotal;
 
@@ -1331,7 +1361,7 @@
         }
 
         // =========================================================================
-        // ENGINE MULTI-PROFILS : GESTION DES IDENTITÉS SCOLAIRES
+        // ENGINE MULTI-PROFILS & INITIALISATION DU DOM
         // =========================================================================
         function rafraichirProfilsInterface() {
             const container = document.getElementById("liste-profils-container");
@@ -1343,16 +1373,14 @@
                 div.className = `profile-card ${id === SystemState.profilActifId ? 'active' : ''}`;
                 div.setAttribute("onclick", `activerProfil('${id}')`);
 
-                // Compter le nombre de notes enregistrées pour donner une info sur le profil
                 let nbNotes = Object.keys(p.notes).length;
 
                 div.innerHTML = `
                     <h3>${p.nom}</h3>
-                    <p>Classe de suivi : ${p.classeActive} (${p.serieActive})</p>
+                    <p>Niveau de suivi : ${p.classeActive} (${p.serieActive})</p>
                     <p style="margin-top: 5px; font-size: 0.75rem; color: var(--text-muted);">${nbNotes} note(s) en mémoire</p>
                 `;
 
-                // Empêcher la suppression de l'unique profil restant
                 if (Object.keys(SystemState.profils).length > 1) {
                     div.innerHTML += `<button class="delete-profile-btn" onclick="supprimerProfil('${id}', event)">Supprimer</button>`;
                 }
@@ -1401,13 +1429,13 @@
         }
 
         function supprimerProfil(id, e) {
-            e.stopPropagation(); // Évite d'activer le profil avant de le détruire
+            e.stopPropagation(); 
             if (id === SystemState.profilActifId) {
                 alert("Impossible de supprimer le profil actif. Basculez d'abord sur un autre élève.");
                 return;
             }
 
-            if (confirm(`Êtes-vous certain de vouloir anéantir définitivement toutes les notes de ce profil ?`)) {
+            if (confirm(`Êtes-vous certain de vouloir supprimer définitivement toutes les notes de ce profil ?`)) {
                 delete SystemState.profils[id];
                 sauvegarderSysteme();
                 rafraichirProfilsInterface();
@@ -1415,7 +1443,7 @@
         }
 
         function reinitialiserToutDonnees() {
-            if (confirm("💥 ALERTE CRITIQUE : Cette opération va détruire l'intégralité des profils, des notes d'interrogations, des devoirs et des simulations de ce navigateur. Continuer ?")) {
+            if (confirm("🚨 ATTENTION : Cette opération va réinitialiser l'intégralité des profils, des notes et des simulations. Continuer ?")) {
                 localStorage.removeItem('Mmes_Pro_System_v3');
                 SystemState = {
                     profils: { "default_id": { id: "default_id", nom: "Johan Dante", classeActive: "6eme", serieActive: "Général", notes: {}, simNotes: {} } },
@@ -1427,9 +1455,7 @@
             }
         }
 
-        // Lancement général au chargement du DOM
         window.onload = chargerSysteme;
-</script>
+    </script>
 </body>
 </html>
-
