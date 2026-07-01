@@ -3,21 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mmes - Plateforme de Suivi Scolaire Annuel</title>
+    <title>Mmes Pro - Système de Gestion & Simulation Scolaire</title>
     <style>
         :root {
-            --primary: #1e4620; /* Vert d'école noble */
+            --primary: #1e4620;
             --primary-light: #2d5a27;
-            --secondary: #d9a05b; /* Ligne dorée/bois */
-            --bg: #f6f8f5; /* Fond papier clair reposant */
+            --secondary: #d9a05b;
+            --bg: #f4f7f4;
+            --card-bg: #ffffff;
             --text: #1e293b;
             --text-muted: #64748b;
-            --card-bg: #ffffff;
+            --border: #e2e8f0;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
             --info: #3b82f6;
-            --border: #e2e8f0;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #2d5a27;
+            --primary-light: #3b7333;
+            --secondary: #e5b06a;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="vintage"] {
+            --primary: #3d251e;
+            --primary-light: #5a3931;
+            --secondary: #cfa87b;
+            --bg: #f7f2e9;
+            --card-bg: #fffdf9;
+            --text: #2b1a16;
+            --text-muted: #7c6a65;
+            --border: #e6ded2;
         }
 
         body {
@@ -25,66 +53,138 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 15px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
         }
 
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border-bottom: 4px dashed var(--secondary);
-            padding-bottom: 15px;
+            padding-bottom: 20px;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
+            position: relative;
         }
 
         header h1 {
             color: var(--primary);
             margin: 0;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 800;
+            letter-spacing: 3px;
+            font-weight: 900;
+            transition: var(--transition);
         }
 
         header p {
             font-style: italic;
             color: var(--text-muted);
             margin: 5px 0 0 0;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
         }
+
+        .theme-switcher {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            background: var(--card-bg);
+            padding: 6px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .theme-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .theme-dot.active { border-color: var(--text); transform: scale(1.1); }
+        .dot-light { background: #1e4620; }
+        .dot-dark { background: #0f172a; }
+        .dot-vintage { background: #3d251e; }
 
         .main-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
             margin-bottom: 60px;
+        }
+
+        .navigation-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            width: 100%;
+            padding-bottom: 5px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .app-panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .app-panel.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .card {
             background: var(--card-bg);
             padding: 25px;
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
             border: 1px solid var(--border);
             box-sizing: border-box;
+            transition: var(--transition);
         }
 
-        .selectors-bar {
+        .profile-bar {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr) auto;
+            gap: 15px;
+            align-items: end;
         }
 
-        @media (max-width: 600px) {
-            .selectors-bar {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 768px) {
+            .profile-bar { grid-template-columns: 1fr; }
         }
 
         label {
@@ -97,43 +197,40 @@
             letter-spacing: 0.5px;
         }
 
-        select {
+        select, input[type="text"] {
             width: 100%;
             padding: 12px;
             border: 2px solid var(--border);
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             font-size: 1rem;
             font-weight: 600;
             color: var(--text);
             outline: none;
-            background-color: #fafafa;
-            transition: border-color 0.2s;
+            background-color: var(--bg);
+            transition: var(--transition);
+            box-sizing: border-box;
         }
 
-        select:focus {
+        select:focus, input[type="text"]:focus {
             border-color: var(--primary);
-            background-color: #fff;
         }
 
-        /* Panneau de statistiques */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
         }
 
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
 
         .stat-box {
-            background: #f8fafc;
+            background: var(--bg);
             border: 1px solid var(--border);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 18px;
+            border-radius: var(--radius-md);
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
         .stat-label {
@@ -141,176 +238,156 @@
             text-transform: uppercase;
             color: var(--text-muted);
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         .stat-value {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: var(--primary);
         }
 
-        /* Tableau de saisie */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 700px;
+            min-width: 850px;
         }
 
         th {
             background-color: var(--primary);
             color: white;
-            padding: 14px 10px;
+            padding: 16px 12px;
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             text-align: left;
         }
 
-        th:not(:first-child), td:not(:first-child) {
-            text-align: center;
-        }
+        th:not(:first-child), td:not(:first-child) { text-align: center; }
 
         td {
-            padding: 12px 10px;
+            padding: 12px;
             border-bottom: 1px solid var(--border);
             font-size: 0.95rem;
-            font-weight: 500;
+            font-weight: 600;
+            background: var(--card-bg);
         }
 
-        tr:hover td {
-            background-color: #fcfdfc;
+        tr:hover td { background-color: var(--bg); }
+
+        .note-container {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            align-items: center;
         }
 
-        .coef-display {
-            font-weight: bold;
-            color: var(--primary);
-            background: #f0f4f0;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: inline-block;
+        .sub-input-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sub-input-box span {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-weight: 700;
         }
 
         input[type="number"] {
-            width: 75px;
+            width: 56px;
             padding: 8px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
             text-align: center;
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 700;
             outline: none;
-            transition: all 0.2s;
+            background: var(--bg);
+            color: var(--text);
+            transition: var(--transition);
         }
 
         input[type="number"]:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.15);
+            background: var(--card-bg);
+        }
+
+        .matiere-moy-cell {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--primary);
         }
 
         .avg-row {
-            background-color: #f1f6f0 !important;
-            font-weight: bold;
+            background-color: var(--bg) !important;
             border-top: 2px solid var(--primary);
             border-bottom: 2px solid var(--primary);
         }
 
         .avg-row td {
-            padding: 16px 10px;
+            padding: 18px 12px;
             color: var(--primary);
-            font-size: 0.95rem;
+            font-size: 1rem;
             text-transform: uppercase;
+            background: var(--bg);
         }
 
-        /* Boutons d'actions */
         .actions-bar {
             display: flex;
             gap: 15px;
         }
 
-        @media (max-width: 600px) {
-            .actions-bar {
-                flex-direction: column;
-            }
-        }
+        @media (max-width: 600px) { .actions-bar { flex-direction: column; } }
 
         .btn {
             flex: 1;
             padding: 15px;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            transition: all 0.2s;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
 
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-light); }
+        .btn-secondary { background-color: var(--border); color: var(--text); }
+        .btn-secondary:hover { filter: brightness(0.95); }
+        .btn-danger { background-color: #fee2e2; color: var(--danger); border: 1px solid #fca5a5; }
+        .btn-danger:hover { background-color: #fecaca; }
 
-        .btn-primary:hover {
-            background-color: var(--primary-light);
-        }
-
-        .btn-secondary {
-            background-color: #e2e8f0;
-            color: #334155;
-        }
-
-        .btn-secondary:hover {
-            background-color: #cbd5e1;
-        }
-
-        .btn-danger {
-            background-color: #fee2e2;
-            color: var(--danger);
-            border: 1px solid #fca5a5;
-            font-size: 0.9rem;
-            padding: 10px;
-        }
-
-        .btn-danger:hover {
-            background-color: #fecaca;
-        }
-
-        /* Section Bilan de fin */
         .annual-panel {
             text-align: center;
-            background: linear-gradient(180deg, #fafafa 0%, #f1f5f9 100%);
-            border: 2px solid var(--border);
-            display: none;
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            background: linear-gradient(180deg, var(--card-bg) 0%, var(--bg) 100%);
+            border: 2px solid var(--primary);
         }
 
         .annual-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             text-transform: uppercase;
             color: var(--text-muted);
             margin-bottom: 5px;
-            letter-spacing: 1px;
         }
 
         .annual-value {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 900;
             color: var(--primary);
             margin-bottom: 15px;
@@ -321,181 +398,335 @@
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
+            margin-bottom: 20px;
         }
 
         .badge {
-            padding: 8px 24px;
+            padding: 10px 28px;
             border-radius: 30px;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .badge.pass { background-color: #d1fae5; color: var(--success); }
         .badge.fail { background-color: #fee2e2; color: var(--danger); }
         .badge.mention { background-color: #eff6ff; color: var(--info); }
-        .badge.nc { background-color: #e2e8f0; color: #475569; }
+        .badge.nc { background-color: var(--border); color: var(--text-muted); }
 
-        /* Graphique de comparaison rapide */
         .chart-container {
             margin-top: 25px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             text-align: left;
-            max-width: 500px;
+            max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
         }
 
         .chart-bar-bg {
-            background: #e2e8f0;
-            height: 12px;
-            border-radius: 6px;
+            background: var(--bg);
+            height: 16px;
+            border-radius: 30px;
             overflow: hidden;
             position: relative;
+            border: 1px solid var(--border);
         }
 
         .chart-bar-fill {
-            background: var(--primary-light);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
             height: 100%;
             width: 0%;
-            transition: width 0.6s ease;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Pied de page */
+        /* Styles Simulateur d'Examen */
+        .simulator-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) { .simulator-grid { grid-template-columns: 1fr; } }
+
+        .sim-table th { background-color: var(--secondary); color: var(--card-bg); }
+
+        .result-sticky-box {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            text-align: center;
+        }
+
+        .radar-sim-box {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--secondary);
+            margin: 15px 0;
+        }
+
+        /* Styles Multi-Profils */
+        .profile-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .profile-card {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .profile-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+        .profile-card.active { border-color: var(--primary); background: var(--card-bg); box-shadow: var(--shadow); }
+        .profile-card.active::before {
+            content: "✓ Actif";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .profile-card h3 { margin: 0 0 5px 0; color: var(--primary); font-size: 1.2rem; }
+        .profile-card p { margin: 0; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+
+        .delete-profile-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
         footer {
             margin-top: auto;
-            padding: 20px 0;
+            padding: 25px 0;
             text-align: center;
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             color: var(--text-muted);
             letter-spacing: 0.5px;
         }
 
-        footer a {
-            color: #ff0050;
-            text-decoration: none;
-            border-bottom: 1px dashed #ff0050;
-        }
+        footer a { color: #ff0050; text-decoration: none; border-bottom: 2px dashed #ff0050; }
 
-        /* Optimisations impressions */
         @media print {
-            body { background: white; padding: 0; }
-            .card, header { box-shadow: none; border: none; max-width: 100%; }
-            .selectors-bar, .actions-bar, footer, .btn-danger { display: none !important; }
-            input { border: none !important; background: transparent !important; }
-            .annual-panel { display: block !important; }
+            body { background: white; padding: 0; color: black; }
+            .card, header { box-shadow: none; border: none; max-width: 100%; padding: 10px; }
+            .theme-switcher, .navigation-tabs, .profile-bar, .actions-bar, footer, .btn-danger, .delete-profile-btn { display: none !important; }
+            input, select { border: none !important; background: transparent !important; appearance: none; -webkit-appearance: none; padding: 0 !important; }
+            input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+            .app-panel { display: none !important; }
+            #panel-suivi { display: block !important; }
+            #panel-annuel { display: block !important; margin-top: 30px; }
+            td, th { border: 1px solid #94a3b8 !important; }
+            th { background-color: #1e4620 !important; color: white !important; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Mmes</h1>
-        <p>Espace Numérique de Suivi Annuel</p>
+        <h1>Mmes Pro</h1>
+        <p>Espace Numérique Global de Suivi & de Simulation Académique</p>
+        
+        <div class="theme-switcher">
+            <div class="theme-dot dot-light active" onclick="changerTheme('light')" title="Thème École"></div>
+            <div class="theme-dot dot-dark" onclick="changerTheme('dark')" title="Thème Sombre"></div>
+            <div class="theme-dot dot-vintage" onclick="changerTheme('vintage')" title="Thème Vintage"></div>
+        </div>
     </header>
 
     <div class="main-container">
         
-        <div class="card selectors-bar">
-            <div>
-                <label for="classe">Classe Active</label>
-                <select id="classe" onchange="initialiserNiveau()">
-                    <option value="6eme">6ème</option>
-                    <option value="5eme">5ème</option>
-                    <option value="4eme">4ème</option>
-                    <option value="3eme">3ème</option>
-                    <option value="seconde">Seconde</option>
-                    <option value="premiere">Première</option>
-                    <option value="terminale">Terminale</option>
-                </select>
-            </div>
-            <div id="box-serie" style="display: none;">
-                <label for="serie">Série d'Orientation</label>
-                <select id="serie" onchange="initialiserMatieres()">
+        <!-- Onglets Principaux -->
+        <div class="navigation-tabs">
+            <button class="tab-btn active" onclick="switchTab('suivi')">📈 Notes & Suivi</button>
+            <button class="tab-btn" onclick="switchTab('simulateur')">🎯 Simulateur Examens</button>
+            <button class="tab-btn" onclick="switchTab('profils')">👥 Gestion des Profils</button>
+        </div>
+
+        <!-- PANNEAU 1 : SUIVI DES NOTES -->
+        <div id="panel-suivi" class="app-panel active">
+            <div class="card profile-bar" style="margin-bottom: 25px;">
+                <div>
+                    <label for="classe">Niveau d'Étude</label>
+                    <select id="classe" onchange="initialiserNiveau()">
+                        <option value="6eme">6ème</option>
+                        <option value="5eme">5ème</option>
+                        <option value="4eme">4ème</option>
+                        <option value="3eme">3ème</option>
+                        <option value="seconde">Seconde</option>
+                        <option value="premiere">Première</option>
+                        <option value="terminale">Terminale</option>
                     </select>
+                </div>
+                <div id="box-serie" style="display: none;">
+                    <label for="serie">Série</label>
+                    <select id="serie" onchange="initialiserMatieres()">
+                        <!-- Rempli par JS -->
+                    </select>
+                </div>
+                <div>
+                    <label>Profil Actuel</label>
+                    <div id="nom-profil-actif" style="font-weight: 800; color: var(--primary); padding: 12px 0; font-size: 1.1rem;">-</div>
+                </div>
             </div>
-        </div>
 
-        <div class="card">
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 30%;">Intitulé Matière</th>
-                            <th style="width: 15%;">Coefficient</th>
-                            <th style="width: 18%;">Trimestre 1</th>
-                            <th style="width: 18%;">Trimestre 2</th>
-                            <th style="width: 18%;">Trimestre 3</th>
-                        </tr>
-                    </thead>
-                    <tbody id="corps-table">
+            <!-- Tableau d'Évaluation -->
+            <div class="card" style="margin-bottom: 25px;">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 22%;">Matières Évaluées</th>
+                                <th style="width: 10%;">Coef</th>
+                                <th style="width: 22%;">Trimestre 1 (Interro / DS)</th>
+                                <th style="width: 22%;">Trimestre 2 (Interro / DS)</th>
+                                <th style="width: 22%;">Trimestre 3 (Interro / DS)</th>
+                                <th style="width: 12%;">Moy. An</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corps-table">
+                            <!-- Généré par JS -->
                         </tbody>
-                    <tfoot>
-                        <tr class="avg-row">
-                            <td>Moyenne Périodique</td>
-                            <td id="tfoot-coefs">-</td>
-                            <td id="avg-t1">--.--</td>
-                            <td id="avg-t2">--.--</td>
-                            <td id="avg-t3">--.--</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        <tfoot>
+                            <tr class="avg-row">
+                                <td>Rendement Périodique</td>
+                                <td id="tfoot-coefs">-</td>
+                                <td id="avg-t1">--.--</td>
+                                <td id="avg-t2">--.--</td>
+                                <td id="avg-t3">--.--</td>
+                                <td id="avg-general-an" style="font-weight: 900;">--.--</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Dashboard de Stats -->
+            <div class="stats-grid" style="margin-bottom: 25px;">
+                <div class="stat-box">
+                    <div class="stat-label">Volume Coefficients</div>
+                    <div id="stat-total-coef" class="stat-value">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Points Annuels</div>
+                    <div id="stat-total-points" class="stat-value">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Pointe Maximale</div>
+                    <div id="stat-max-note" class="stat-value">--</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Pointe Minimale</div>
+                    <div id="stat-min-note" class="stat-value">--</div>
+                </div>
+            </div>
+
+            <!-- Boutons Actions -->
+            <div class="actions-bar" style="margin-bottom: 25px;">
+                <button class="btn btn-primary" onclick="calculerBilanGlobal()">Générer la Synthèse Annuelle</button>
+                <button class="btn btn-secondary" onclick="window.print()">Générer le Bulletin PDF</button>
+            </div>
+
+            <!-- Panneau d'Analyse Globale -->
+            <div id="panel-annuel" class="card annual-panel" style="display: none;">
+                <div class="annual-title">Bilan de l'Année Scolaire</div>
+                <div id="valeur-annuelle" class="annual-value">--.-- / 20</div>
+                
+                <div class="badge-group">
+                    <div id="badge-decision" class="badge">Décision</div>
+                    <div id="badge-mention" class="badge mention">Mention</div>
+                </div>
+
+                <div class="chart-container">
+                    <div style="font-size:0.8rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Graphique de Performance Linéaire</div>
+                    <div>Trimestre 1 : <span id="lbl-t1" style="font-weight:700;">--</span></div><div class="chart-bar-bg"><div id="bar-t1" class="chart-bar-fill"></div></div>
+                    <div>Trimestre 2 : <span id="lbl-t2" style="font-weight:700;">--</span></div><div class="chart-bar-bg"><div id="bar-t2" class="chart-bar-fill"></div></div>
+                    <div>Trimestre 3 : <span id="lbl-t3" style="font-weight:700;">--</span></div><div class="chart-bar-bg"><div id="bar-t3" class="chart-bar-fill"></div></div>
+                </div>
             </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-label">Total Coefficients</div>
-                <div id="stat-total-coef" class="stat-value">0</div>
+        <!-- PANNEAU 2 : SIMULATEUR EXAMENS -->
+        <div id="panel-simulateur" class="app-panel">
+            <div class="card" style="margin-bottom: 20px;">
+                <h2 style="margin-top:0; color:var(--primary);" id="sim-titre-examen">Simulation d'Examen d'État</h2>
+                <p style="color:var(--text-muted); margin:0;">Configure tes projections de notes pour analyser tes chances de décrocher le diplôme officiel avec mention.</p>
             </div>
-            <div class="stat-box">
-                <div class="stat-label">Points Annuels</div>
-                <div id="stat-total-points" class="stat-value">0</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Plus Forte Note</div>
-                <div id="stat-max-note" class="stat-value">--</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Plus Faible Note</div>
-                <div id="stat-min-note" class="stat-value">--</div>
+
+            <div class="simulator-grid">
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="sim-table">
+                            <thead>
+                                <tr>
+                                    <th>Épreuve Planifiée</th>
+                                    <th>Coefficient</th>
+                                    <th style="width: 30%;">Note Prévisionnelle (/20)</th>
+                                    <th>Points Calculés</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corps-simulateur">
+                                <!-- Généré dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card result-sticky-box">
+                    <div class="annual-title">Score Total Estimé</div>
+                    <div id="sim-total-points" class="radar-sim-box">0</div>
+                    <div style="font-weight:700; margin-bottom:15px; color:var(--text-muted);" id="sim-seuil-admissibilite">Seuil requis : -- points</div>
+                    
+                    <div id="sim-badge-status" class="badge nc" style="display:inline-block; margin-bottom:15px; width:80%;">En attente</div>
+                    <div id="sim-badge-mention" class="badge mention" style="display:none; width:80%;">--</div>
+                </div>
             </div>
         </div>
 
-        <div class="actions-bar">
-            <button class="btn btn-primary" onclick="calculerBilanGlobal()">
-                Calculer le Bilan Général
-            </button>
-            <button class="btn btn-secondary" onclick="window.print()">
-                Exporter en PDF / Imprimer
-            </button>
-        </div>
+        <!-- PANNEAU 3 : GESTION DES PROFILS -->
+        <div id="panel-profils" class="app-panel">
+            <div class="card">
+                <h2 style="margin-top:0; color:var(--primary);">Gestionnaire de Profils d'Élèves</h2>
+                <p style="color:var(--text-muted); margin-bottom:20px;">Crée, supprime ou bascule entre différents profils pour suivre les notes de plusieurs élèves ou enregistrer plusieurs années scolaires.</p>
+                
+                <div style="display:flex; gap:10px; max-width:500px;">
+                    <input type="text" id="nouveau-nom-profil" placeholder="Ex: Johan Dante, Session 2026..." maxlength="30">
+                    <button class="btn btn-primary" style="flex:0; padding:0 25px; white-space:nowrap;" onclick="creerProfil()">+ Ajouter</button>
+                </div>
 
-        <div id="panel-annuel" class="card annual-panel">
-            <div class="annual-title">Résultat de la Synthèse Annuelle</div>
-            <div id="valeur-annuelle" class="annual-value">--.-- / 20</div>
-            
-            <div class="badge-group">
-                <div id="badge-decision" class="badge">Décision</div>
-                <div id="badge-mention" class="badge mention">Mention</div>
+                <div id="liste-profils-container" class="profile-list">
+                    <!-- Généré dynamiquement par JS -->
+                </div>
             </div>
 
-            <div class="chart-container">
-                <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">ÉVOLUTION DES TRIMESTRES</div>
-                <div>T1 : <span id="lbl-t1">--</span></div><div class="chart-bar-bg"><div id="bar-t1" class="chart-bar-fill"></div></div>
-                <div>T2 : <span id="lbl-t2">--</span></div><div class="chart-bar-bg"><div id="bar-t2" class="chart-bar-fill"></div></div>
-                <div>T3 : <span id="lbl-t3">--</span></div><div class="chart-bar-bg"><div id="bar-t3" class="chart-bar-fill"></div></div>
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-danger" style="display: inline-block; width: auto;" onclick="reinitialiserToutDonnees()">
+                    ⚠️ Purger la mémoire globale du système
+                </button>
             </div>
-        </div>
-
-        <div style="text-align: center;">
-            <button class="btn btn-danger" style="display: inline-block; width: auto;" onclick="reinitialiserToutDonnees()">
-                Effacer et réinitialiser toutes les notes enregistrées
-            </button>
         </div>
 
     </div>
@@ -505,202 +736,408 @@
     </footer>
 
     <script>
-        // Banques de matières configurées selon les normes d'Afrique de l'Ouest
-        const matieresCollege = ["Français", "Mathématiques", "Physique-Chimie", "SVT", "Anglais", "Informatique", "Histoire-Géographie", "EDHC", "EPS", "Conduite"];
-        
-        // Structure de coefficients standard par défaut
-        const CoefsParDefaut = {
-            "6eme": {"Français": 2, "Mathématiques": 2, "Physique-Chimie": 1, "SVT": 1, "Anglais": 1, "Histoire-Géographie": 1},
-            "3eme": {"Français": 3, "Mathématiques": 3, "Physique-Chimie": 2, "SVT": 2, "Anglais": 2, "Histoire-Géographie": 2},
-            "terminaleA": {"Philosophie": 5, "Français": 4, "Anglais": 3, "Histoire-Géographie": 3, "Mathématiques": 1},
-            "terminaleD": {"Mathématiques": 4, "Physique-Chimie": 4, "SVT": 4, "Philosophie": 2, "Français": 2, "Anglais": 2}
+                // =========================================================================
+        // CONSTANTES & BASES DE DONNÉES DU SYSTÈME SCOLAIRE (CONFORME MENA CÔTE D'IVOIRE)
+        // =========================================================================
+        const MATIERES_COLLEGE = [
+            "Français (Compo/Expr. Écrite)", "Mathématiques", "Physique-Chimie", 
+            "Sciences de la Vie et de la Terre", "Anglais", "Histoire-Géographie", 
+            "EDHC", "Arts Plastiques ou Musique", "Conduite", "EPS"
+        ];
+
+        const MATIERES_LYCEE_BASE = [
+            "Français", "Mathématiques", "Physique-Chimie", "SVT", 
+            "Anglais", "Histoire-Géographie", "EPS", "Conduite"
+        ];
+
+        // Configuration officielle des coefficients MENA
+        const COEFFICIENTS_OFFICIELS = {
+            "6eme": { "Français (Compo/Expr. Écrite)": 2, "Mathématiques": 2, "Physique-Chimie": 1, "SVT": 1, "Anglais": 1, "Histoire-Géographie": 1, "EDHC": 1, "Arts Plastiques ou Musique": 1, "Conduite": 1, "EPS": 1 },
+            "5eme": { "Français (Compo/Expr. Écrite)": 2, "Mathématiques": 2, "Physique-Chimie": 1, "SVT": 1, "Anglais": 1, "Histoire-Géographie": 1, "EDHC": 1, "Arts Plastiques ou Musique": 1, "Conduite": 1, "EPS": 1 },
+            "4eme": { "Français (Compo/Expr. Écrite)": 3, "Mathématiques": 3, "Physique-Chimie": 2, "SVT": 2, "Anglais": 2, "Histoire-Géographie": 2, "EDHC": 1, "Arts Plastiques ou Musique": 1, "Conduite": 1, "EPS": 1, "Deuxième Langue (All/Esp)": 2 },
+            "3eme": { "Français (Compo/Expr. Écrite)": 5, "Mathématiques": 4, "Physique-Chimie": 2, "SVT": 2, "Anglais": 3, "Histoire-Géographie": 2, "EDHC": 1, "Arts Plastiques ou Musique": 1, "Conduite": 1, "EPS": 1, "Deuxième Langue (All/Esp)": 2 },
+            
+            "secondeA": { "Français": 4, "Mathématiques": 2, "Physique-Chimie": 1, "SVT": 1, "Anglais": 3, "Histoire-Géographie": 3, "Deuxième Langue (All/Esp)": 3, "EPS": 1, "Conduite": 1 },
+            "secondeC": { "Français": 2, "Mathématiques": 5, "Physique-Chimie": 4, "SVT": 2, "Anglais": 2, "Histoire-Géographie": 2, "EPS": 1, "Conduite": 1 },
+            
+            "premiereA": { "Philosophie": 2, "Français": 4, "Mathématiques": 2, "Physique-Chimie": 1, "SVT": 1, "Anglais": 4, "Histoire-Géographie": 3, "Deuxième Langue (All/Esp)": 4, "EPS": 1, "Conduite": 1 },
+            "premiereC": { "Français": 2, "Mathématiques": 6, "Physique-Chimie": 5, "SVT": 2, "Anglais": 2, "Histoire-Géographie": 2, "EPS": 1, "Conduite": 1 },
+            "premiereD": { "Français": 2, "Mathématiques": 4, "Physique-Chimie": 4, "SVT": 4, "Anglais": 2, "Histoire-Géographie": 2, "EPS": 1, "Conduite": 1 },
+            
+            "terminaleA1": { "Philosophie": 5, "Français": 4, "Mathématiques": 3, "Anglais": 3, "Histoire-Géographie": 3, "Deuxième Langue (All/Esp)": 3, "EPS": 1, "Conduite": 1, "SVT": 1 },
+            "terminaleA2": { "Philosophie": 5, "Français": 4, "Mathématiques": 1, "Anglais": 4, "Histoire-Géographie": 3, "Deuxième Langue (All/Esp)": 4, "EPS": 1, "Conduite": 1 },
+            "terminaleC": { "Mathématiques": 8, "Physique-Chimie": 5, "Philosophy": 2, "Français": 2, "SVT": 2, "Anglais": 2, "Histoire-Géographie": 2, "EPS": 1, "Conduite": 1 },
+            "terminaleD": { "Mathématiques": 4, "Physique-Chimie": 4, "SVT": 4, "Philosophie": 2, "Français": 2, "Anglais": 2, "Histoire-Géographie": 2, "EPS": 1, "Conduite": 1 }
         };
 
-        // Charger l'état ou générer un objet vierge de stockage local
-        let DonneesScolaires = JSON.parse(localStorage.getItem('Mmes_Storage_v2')) || {
-            classeActive: "6eme",
-            serieActive: "A",
-            notes: {} // Format clé: "classe_serie_trimestre_matiere"
+        // Configuration pour le simulateur d'examens d'État officiels
+        const STRUCTURES_EXAMENS = {
+            "3eme": {
+                nom: "Brevet d'Études du Premier Cycle (BEPC)",
+                seuil: 180, // Seuil sur 360 points (coeff total équivalent à 18)
+                epreuves: [
+                    { nom: "Composition Française", coef: 2 },
+                    { nom: "Mathématiques", coef: 2 },
+                    { nom: "Physique-Chimie", coef: 1 },
+                    { nom: "SVT", coef: 1 },
+                    { nom: "Anglais (Oral + Écrit)", coef: 2 },
+                    { nom: "Histoire-Géographie", coef: 1 },
+                    { nom: "EDHC", coef: 1 },
+                    { nom: "Langue 2 / Option", coef: 1 },
+                    { nom: "Épreuve Physique (EPS)", coef: 1 }
+                ]
+            },
+            "terminaleA": {
+                nom: "Baccalauréat - Séries Littéraires (A1 / A2)",
+                seuil: 200, // Seuil sur 400 points
+                epreuves: [
+                    { nom: "Philosophie", coef: 5 },
+                    { nom: "Français (Écrit + Oral)", coef: 5 },
+                    { nom: "Histoire-Géographie", coef: 3 },
+                    { nom: "Anglais (Écrit + Oral)", coef: 4 },
+                    { nom: "Langue 2 (All/Esp)", coef: 3 },
+                    { nom: "Mathématiques", coef: 2 },
+                    { nom: "EPS", coef: 1 }
+                ]
+            },
+            "terminaleD": {
+                nom: "Baccalauréat - Série D (Sciences Scientifiques)",
+                seuil: 220, // Seuil sur 440 points
+                epreuves: [
+                    { nom: "Mathématiques", coef: 4 },
+                    { nom: "Physique-Chimie", coef: 4 },
+                    { nom: "Sciences de la Vie et de la Terre", coef: 4 },
+                    { nom: "Philosophie", coef: 2 },
+                    { nom: "Français (Écrit + Oral)", coef: 3 },
+                    { nom: "Histoire-Géographie", coef: 2 },
+                    { nom: "Anglais (Écrit + Oral)", coef: 2 },
+                    { nom: "EPS", coef: 1 }
+                ]
+            },
+            "terminaleC": {
+                nom: "Baccalauréat - Série C (Sciences Exactes)",
+                seuil: 240, // Seuil sur 480 points
+                epreuves: [
+                    { nom: "Mathématiques", coef: 8 },
+                    { nom: "Physique-Chimie", coef: 5 },
+                    { nom: "Sciences de la Vie et de la Terre", coef: 2 },
+                    { nom: "Philosophie", coef: 2 },
+                    { nom: "Français", coef: 3 },
+                    { nom: "Histoire-Géographie", coef: 2 },
+                    { nom: "Anglais", coef: 2 },
+                    { nom: "EPS", coef: 1 }
+                ]
+            }
         };
 
-        function verifierSauvegardeExistante() {
-            document.getElementById("classe").value = DonneesScolaires.classeActive;
+        // =========================================================================
+        // ARCHITECTURE GESTIONNAIRE D'ÉTAT MULTI-PROFILS (LOCALSTORAGE CENTRALISÉ)
+        // =========================================================================
+        let SystemState = {
+            profils: {
+                "default_id": { id: "default_id", nom: "Johan Dante", classeActive: "6eme", serieActive: "Général", notes: {}, simNotes: {} }
+            },
+            profilActifId: "default_id",
+            themeActif: "light"
+        };
+
+        // Initialisation de la mémoire globale
+        function chargerSysteme() {
+            const sauvegarde = localStorage.getItem('Mmes_Pro_System_v3');
+            if (sauvegarde) {
+                try {
+                    SystemState = JSON.parse(sauvegarde);
+                } catch(e) {
+                    console.error("Erreur lecture stockage, réinitialisation forcée.", e);
+                }
+            }
+            if (!SystemState.profils || Object.keys(SystemState.profils).length === 0) {
+                SystemState.profils = { "default_id": { id: "default_id", nom: "Johan Dante", classeActive: "6eme", serieActive: "Général", notes: {}, simNotes: {} } };
+                SystemState.profilActifId = "default_id";
+            }
+            
+            document.getElementById("classe").value = getProfilActif().classeActive || "6eme";
+            changerTheme(SystemState.themeActif || "light");
+            rafraichirProfilsInterface();
             initialiserNiveau(true);
         }
 
+        function getProfilActif() {
+            return SystemState.profils[SystemState.profilActifId];
+        }
+
+        function sauvegarderSysteme() {
+            localStorage.setItem('Mmes_Pro_System_v3', JSON.stringify(SystemState));
+        }
+
+        // =========================================================================
+        // CONTRÔLEUR D'INTERFACE & ONGLETS
+        // =========================================================================
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.app-panel').forEach(panel => panel.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`panel-${tabId}`).classList.add('active');
+
+            if (tabId === 'simulateur') {
+                genererTableauSimulateur();
+            }
+        }
+
+        function changerTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            SystemState.themeActif = theme;
+            document.querySelectorAll('.theme-dot').forEach(dot => dot.classList.remove('active'));
+            document.querySelector(`.dot-${theme}`).classList.add('active');
+            sauvegarderSysteme();
+        }
+
+        // =========================================================================
+        // MOTEUR DYNAMIQUE : SUIVI DES NOTES TRIMESTRIELLES
+        // =========================================================================
         function initialiserNiveau(estChargementInitial = false) {
             const classe = document.getElementById("classe").value;
             const comboSerie = document.getElementById("box-serie");
             const selectSerie = document.getElementById("serie");
+            const profil = getProfilActif();
 
-            DonneesScolaires.classeActive = classe;
+            profil.classeActive = classe;
 
             if (["6eme", "5eme", "4eme", "3eme"].includes(classe)) {
                 comboSerie.style.display = "none";
-                DonneesScolaires.serieActive = "Général";
+                profil.serieActive = "Général";
             } else {
                 comboSerie.style.display = "block";
                 if (!estChargementInitial || !selectSerie.innerHTML.trim()) {
                     if (classe === "seconde") {
                         selectSerie.innerHTML = '<option value="A">Série A</option><option value="C">Série C</option>';
+                    } else if (classe === "terminale") {
+                        selectSerie.innerHTML = '<option value="A1">Série A1</option><option value="A2">Série A2</option><option value="C">Série C</option><option value="D">Série D</option>';
                     } else {
                         selectSerie.innerHTML = '<option value="A">Série A</option><option value="C">Série C</option><option value="D">Série D</option>';
                     }
-                    if(!estChargementInitial) DonneesScolaires.serieActive = selectSerie.value;
+                    if(!estChargementInitial) profil.serieActive = selectSerie.value;
                 } else {
-                    selectSerie.value = DonneesScolaires.serieActive;
+                    selectSerie.value = profil.serieActive;
                 }
             }
+            sauvegarderSysteme();
             initialiserMatieres(estChargementInitial);
         }
 
         function initialiserMatieres(estChargementInitial = false) {
-            const classe = DonneesScolaires.classeActive;
+            const profil = getProfilActif();
+            const classe = profil.classeActive;
             const selectSerie = document.getElementById("serie");
+            
             if (selectSerie && selectSerie.parentNode.style.display !== "none") {
-                DonneesScolaires.serieActive = selectSerie.value;
+                profil.serieActive = selectSerie.value;
             }
             
-            const serie = DonneesScolaires.serieActive;
+            const serie = profil.serieActive;
             const corps = document.getElementById("corps-table");
             corps.innerHTML = "";
 
             let listeFinalMatieres = [];
 
+            // Algorithme de filtrage des disciplines d'Afrique de l'Ouest
             if (["6eme", "5eme", "4eme", "3eme"].includes(classe)) {
-                listeFinalMatieres = [...matieresCollege];
+                listeFinalMatieres = [...MATIERES_COLLEGE];
                 if (["4eme", "3eme"].includes(classe)) {
-                    listeFinalMatieres.push("Espagnol", "Allemand");
+                    listeFinalMatieres.push("Deuxième Langue (All/Esp)");
                 }
             } else {
-                let baseLycee = ["Français", "Mathématiques", "Physique-Chimie", "SVT", "Anglais", "Histoire-Géographie", "EPS", "Conduite"];
+                let baseLycee = [...MATIERES_LYCEE_BASE];
                 if (["premiere", "terminale"].includes(classe)) {
                     baseLycee.unshift("Philosophie");
                 }
-                if (serie === "A") {
-                    baseLycee.push("Espagnol", "Allemand");
+                if (serie.startsWith("A")) {
+                    baseLycee.push("Deuxième Langue (All/Esp)");
+                }
+                if (classe === "seconde" && serie === "C") {
+                    baseLycee = baseLycee.filter(m => m !== "SVT");
                 }
                 listeFinalMatieres = baseLycee;
             }
 
+            // Génération de la grille des modules d'évaluation
             listeFinalMatieres.forEach((matiere, index) => {
                 let r = document.createElement("tr");
 
-                // Nom matière
                 let tdNom = document.createElement("td");
                 tdNom.textContent = matiere;
                 r.appendChild(tdNom);
 
-                // Détermination du coefficient intelligent
-                let cleCoef = CoefsParDefaut[classe] || CoefsParDefaut[classe + serie] || {};
-                let coefDefaut = cleCoef[matiere] || (["6eme", "5eme", "4eme", "3eme"].includes(classe) ? 1 : 2);
+                // Détermination intelligente des coefficients MENA
+                let configurationCle = classe === "seconde" || classe === "premiere" || classe === "terminale" ? classe + serie : classe;
+                let banqueCoeffs = COEFFICIENTS_OFFICIELS[configurationCle] || {};
+                let coefDefaut = banqueCoeffs[matiere] || 2;
 
                 let tdCoef = document.createElement("td");
-                tdCoef.innerHTML = `<input type="number" id="coef-${index}" value="${coefDefaut}" min="1" max="10" oninput="calculerTraitementsPeriodiques()">`;
+                tdCoef.innerHTML = `<input type="number" id="coef-${index}" value="${coefDefaut}" min="1" max="10" oninput="traiterCalculsRecurrents()">`;
                 r.appendChild(tdCoef);
 
-                // Création des 3 inputs trimestriels
+                // Modules de calcul Interro / Devoirs Surveillés (DS) pour chaque trimestre
                 for (let t = 1; t <= 3; t++) {
-                    let idStock = `${classe}_${serie}_t${t}_${matiere}`;
-                    let noteVal = DonneesScolaires.notes[idStock] || "";
+                    let idInterro = `${classe}_${serie}_t${t}_${matiere}_int`;
+                    let idDS = `${classe}_${serie}_t${t}_${matiere}_ds`;
+                    
+                    let valInterro = profil.notes[idInterro] || "";
+                    let valDS = profil.notes[idDS] || "";
                     
                     let tdNote = document.createElement("td");
-                    tdNote.innerHTML = `<input type="number" id="note-t${t}-${index}" step="0.25" min="0" max="20" placeholder="--" value="${noteVal}" oninput="enregistrerNote('${idStock}', this.value)">`;
+                    tdNote.innerHTML = `
+                        <div class="note-container">
+                            <div class="sub-input-box">
+                                <input type="number" id="int-t${t}-${index}" step="0.25" min="0" max="20" placeholder="--" value="${valInterro}" oninput="capturerNote('${idInterro}', this.value)">
+                                <span>INT</span>
+                            </div>
+                            <div class="sub-input-box">
+                                <input type="number" id="ds-t${t}-${index}" step="0.25" min="0" max="20" placeholder="--" value="${valDS}" oninput="capturerNote('${idDS}', this.value)">
+                                <span>DS</span>
+                            </div>
+                        </div>
+                    `;
                     r.appendChild(tdNote);
                 }
+
+                let tdMoyAnnu = document.createElement("td");
+                tdMoyAnnu.id = `moy-an-matiere-${index}`;
+                tdMoyAnnu.className = "matiere-moy-cell";
+                tdMoyAnnu.textContent = "--.--";
+                r.appendChild(tdMoyAnnu);
 
                 corps.appendChild(r);
             });
 
-            calculerTraitementsPeriodiques();
+            document.getElementById("nom-profil-actif").textContent = profil.nom;
+            traiterCalculsRecurrents();
             document.getElementById("panel-annuel").style.display = "none";
         }
 
-        function enregistrerNote(cle, valeur) {
+        function capturerNote(cle, valeur) {
+            const profil = getProfilActif();
             if(valeur.trim() === "") {
-                delete DonneesScolaires.notes[cle];
+                delete profil.notes[cle];
             } else {
                 let num = parseFloat(valeur);
                 if(!isNaN(num) && num >= 0 && num <= 20) {
-                    DonneesScolaires.notes[cle] = valeur;
+                    profil.notes[cle] = valeur;
                 }
             }
-            localStorage.setItem('Mmes_Storage_v2', JSON.stringify(DonneesScolaires));
-            calculerTraitementsPeriodiques();
+            sauvegarderSysteme();
+            traiterCalculsRecurrents();
         }
 
-        function calculerMoyenneUniqueTrimestre(tIndex) {
+        // Calcule la moyenne pondérée d'une matière (Moyenne Interros + 2 * DS) / 3
+        function extraireMoyenneMatierePeriode(indexMatiere, tIndex) {
+            const intInput = document.getElementById(`int-t${tIndex}-${indexMatiere}`);
+            const dsInput = document.getElementById(`ds-t${tIndex}-${indexMatiere}`);
+
+            if (!intInput || !dsInput) return null;
+
+            let valInt = intInput.value.trim();
+            let valDS = dsInput.value.trim();
+
+            if (valInt === "" && valDS === "") return null;
+
+            let intNote = valInt !== "" ? parseFloat(valInt) : null;
+            let dsNote = valDS !== "" ? parseFloat(valDS) : null;
+
+            // Système de secours si l'un des deux devoirs manque
+            if (intNote !== null && dsNote === null) return intNote;
+            if (dsNote !== null && intNote === null) return dsNote;
+            
+            // Règle de pondération officielle ivoirienne
+            return (intNote + (dsNote * 2)) / 3;
+        }
+
+        function traiterCalculsRecurrents() {
             const rows = document.querySelectorAll("#corps-table tr");
-            let sommePoints = 0, sommeCoefs = 0;
-            let complet = true, aDesNotes = false;
+            let totalCoefs = 0;
 
             rows.forEach((row, i) => {
-                const inputNote = document.getElementById(`note-t${tIndex}-${i}`);
-                const inputCoef = document.getElementById(`coef-${i}`);
-                
-                if (inputNote && inputCoef) {
-                    let nVal = inputNote.value.trim();
-                    let cVal = parseFloat(inputCoef.value) || 1;
+                const cInput = document.getElementById(`coef-${i}`);
+                if (cInput) totalCoefs += parseFloat(cInput.value) || 0;
+            });
 
-                    if (nVal === "") {
-                        complet = false;
-                    } else {
-                        let n = parseFloat(nVal);
-                        if (!isNaN(n)) {
-                            sommePoints += n * cVal;
-                            sommeCoefs += cVal;
-                            aDesNotes = true;
-                        }
-                    }
+            document.getElementById("tfoot-coefs").textContent = totalCoefs;
+            document.getElementById("stat-total-coef").textContent = totalCoefs;
+
+            // Analyse par période trimestrielle
+            let pointsCumulAnnuels = 0;
+            let somCoefsT1 = 0, somPointsT1 = 0;
+            let somCoefsT2 = 0, somPointsT2 = 0;
+            let somCoefsT3 = 0, somPointsT3 = 0;
+
+            let extremesNotes = [];
+
+            rows.forEach((row, i) => {
+                const cInput = document.getElementById(`coef-${i}`);
+                if(!cInput) return;
+                let c = parseFloat(cInput.value) || 0;
+
+                let mt1 = extraireMoyenneMatierePeriode(i, 1);
+                let mt2 = extraireMoyenneMatierePeriode(i, 2);
+                let mt3 = extraireMoyenneMatierePeriode(i, 3);
+
+                if(mt1 !== null) { somPointsT1 += mt1 * c; somCoefsT1 += c; extremesNotes.push(mt1); }
+                if(mt2 !== null) { somPointsT2 += mt2 * c; somCoefsT2 += c; extremesNotes.push(mt2); }
+                if(mt3 !== null) { somPointsT3 += mt3 * c; somCoefsT3 += c; extremesNotes.push(mt3); }
+
+                // Moyenne annuelle spécifique par matière
+                let diviseurMatiere = 0, sommeMatiere = 0;
+                if(mt1 !== null) { sommeMatiere += mt1; diviseurMatiere++; }
+                if(mt2 !== null) { sommeMatiere += mt2; diviseurMatiere++; }
+                if(mt3 !== null) { sommeMatiere += mt3; diviseurMatiere++; }
+
+                const cellMoyAn = document.getElementById(`moy-an-matiere-${i}`);
+                if(diviseurMatiere > 0) {
+                    let moyAnMatiere = sommeMatiere / diviseurMatiere;
+                    cellMoyAn.textContent = moyAnMatiere.toFixed(2);
+                    pointsCumulAnnuels += moyAnMatiere * c;
+                } else {
+                    cellMoyAn.textContent = "--.--";
                 }
             });
 
-            return (complet && aDesNotes) ? { val: sommePoints / sommeCoefs, points: sommePoints, coefs: sommeCoefs } : null;
-        }
+            // Affichage des rendements de périodes
+            let moyT1 = somCoefsT1 > 0 ? somPointsT1 / somCoefsT1 : null;
+            let moyT2 = somCoefsT2 > 0 ? somPointsT2 / somCoefsT2 : null;
+            let moyT3 = somCoefsT3 > 0 ? somPointsT3 / somCoefsT3 : null;
 
-        function calculerTraitementsPeriodiques() {
-            let totalCoefsLigne = 0;
-            document.querySelectorAll("[id^='coef-']").forEach(input => {
-                totalCoefsLigne += parseFloat(input.value) || 0;
-            });
-            document.getElementById("tfoot-coefs").textContent = totalCoefsLigne;
-            document.getElementById("stat-total-coef").textContent = totalCoefsLigne;
+            document.getElementById("avg-t1").textContent = moyT1 ? moyT1.toFixed(2) : "MC";
+            document.getElementById("avg-t2").textContent = moyT2 ? moyT2.toFixed(2) : "MC";
+            document.getElementById("avg-t3").textContent = moyT3 ? moyT3.toFixed(2) : "MC";
 
-            let m1 = calculerMoyenneUniqueTrimestre(1);
-            let m2 = calculerMoyenneUniqueTrimestre(2);
-            let m3 = calculerMoyenneUniqueTrimestre(3);
+            let divAn = 0, somAn = 0;
+            if(moyT1) { somAn += moyT1; divAn++; }
+            if(moyT2) { somAn += moyT2; divAn++; }
+            if(moyT3) { somAn += moyT3; divAn++; }
 
-            document.getElementById("avg-t1").textContent = m1 ? m1.val.toFixed(2) : "MC";
-            document.getElementById("avg-t2").textContent = m2 ? m2.val.toFixed(2) : "MC";
-            document.getElementById("avg-t3").textContent = m3 ? m3.val.toFixed(2) : "MC";
+            document.getElementById("avg-general-an").textContent = divAn > 0 ? (somAn / divAn).toFixed(2) : "--.--";
+            document.getElementById("stat-total-points").textContent = pointsCumulAnnuels.toFixed(1);
 
-            // Calcul des extremums analytiques
-            let toutesNotes = [];
-            document.querySelectorAll("#corps-table input[type='number']:not([id^='coef-'])").forEach(inp => {
-                if(inp.value.trim() !== "") {
-                    let v = parseFloat(inp.value);
-                    if(!isNaN(v)) toutesNotes.push(v);
-                }
-            });
-
-            if(toutesNotes.length > 0) {
-                document.getElementById("stat-max-note").textContent = Math.max(...toutesNotes).toFixed(2);
-                document.getElementById("stat-min-note").textContent = Math.min(...toutesNotes).toFixed(2);
+            if(extremesNotes.length > 0) {
+                document.getElementById("stat-max-note").textContent = Math.max(...extremesNotes).toFixed(2);
+                document.getElementById("stat-min-note").textContent = Math.min(...extremesNotes).toFixed(2);
             } else {
                 document.getElementById("stat-max-note").textContent = "--";
                 document.getElementById("stat-min-note").textContent = "--";
             }
-
-            let cumulePoints = (m1?m1.points:0) + (m2?m2.points:0) + (m3?m3.points:0);
-            document.getElementById("stat-total-points").textContent = cumulePoints.toFixed(1);
         }
 
         function calculerBilanGlobal() {
-            calculerTraitementsPeriodiques();
+            traiterCalculsRecurrents();
 
-            let m1 = calculerMoyenneUniqueTrimestre(1);
-            let m2 = calculerMoyenneUniqueTrimestre(2);
-            let m3 = calculerMoyenneUniqueTrimestre(3);
+            let txtT1 = document.getElementById("avg-t1").textContent;
+            let txtT2 = document.getElementById("avg-t2").textContent;
+            let txtT3 = document.getElementById("avg-t3").textContent;
+
+            let m1 = txtT1 !== "MC" ? parseFloat(txtT1) : null;
+            let m2 = txtT2 !== "MC" ? parseFloat(txtT2) : null;
+            let m3 = txtT3 !== "MC" ? parseFloat(txtT3) : null;
 
             const panel = document.getElementById("panel-annuel");
             const lblAnnuel = document.getElementById("valeur-annuelle");
@@ -709,27 +1146,26 @@
 
             panel.style.display = "block";
 
-            // Update graphique barres
-            document.getElementById("lbl-t1").textContent = m1 ? m1.val.toFixed(2) + "/20" : "Non Classé";
-            document.getElementById("bar-t1").style.width = m1 ? (m1.val * 5) + "%" : "0%";
-            document.getElementById("lbl-t2").textContent = m2 ? m2.val.toFixed(2) + "/20" : "Non Classé";
-            document.getElementById("bar-t2").style.width = m2 ? (m2.val * 5) + "%" : "0%";
-            document.getElementById("lbl-t3").textContent = m3 ? m3.val.toFixed(2) + "/20" : "Non Classé";
-            document.getElementById("bar-t3").style.width = m3 ? (m3.val * 5) + "%" : "0%";
+            // Injection et animation graphique
+            document.getElementById("lbl-t1").textContent = m1 ? m1.toFixed(2) + "/20" : "Non Classé";
+            document.getElementById("bar-t1").style.width = m1 ? (m1 * 5) + "%" : "0%";
+            document.getElementById("lbl-t2").textContent = m2 ? m2.toFixed(2) + "/20" : "Non Classé";
+            document.getElementById("bar-t2").style.width = m2 ? (m2 * 5) + "%" : "0%";
+            document.getElementById("lbl-t3").textContent = m3 ? m3.toFixed(2) + "/20" : "Non Classé";
+            document.getElementById("bar-t3").style.width = m3 ? (m3 * 5) + "%" : "0%";
 
             if (!m1 || !m2 || !m3) {
-                lblAnnuel.textContent = "Bilan Incomplet";
-                decBadge.textContent = "MC (Non Classé)";
+                lblAnnuel.textContent = "Synthese Incomplète";
+                decBadge.textContent = "Non Classé (Trimestre manquant)";
                 decBadge.className = "badge nc";
                 mentBadge.style.display = "none";
                 return;
             }
 
             mentBadge.style.display = "inline-block";
-            let moyenneAnnuelle = (m1.val + m2.val + m3.val) / 3;
+            let moyenneAnnuelle = (m1 + m2 + m3) / 3;
             lblAnnuel.textContent = `${moyenneAnnuelle.toFixed(2)} / 20`;
 
-            // Décision de passage
             if (moyenneAnnuelle >= 10.00) {
                 decBadge.textContent = "PASSÉ (Admis)";
                 decBadge.className = "badge pass";
@@ -738,48 +1174,262 @@
                 decBadge.className = "badge fail";
             }
 
-            // Mentions Ivoiriennes Officielles
+            // Calculateur de mentions des Conseils de Classe
             if (moyenneAnnuelle >= 16.00) {
                 mentBadge.textContent = "Excellent (Félicitations du Conseil)";
-                mentBadge.style.background = "#d1fae5";
-                mentBadge.style.color = "var(--success)";
+                mentBadge.style.background = "#d1fae5"; mentBadge.style.color = "var(--success)";
             } else if (moyenneAnnuelle >= 14.00) {
                 mentBadge.textContent = "Très Bien (Tableau d'Honneur)";
-                mentBadge.style.background = "#eff6ff";
-                mentBadge.style.color = "var(--info)";
+                mentBadge.style.background = "#eff6ff"; mentBadge.style.color = "var(--info)";
             } else if (moyenneAnnuelle >= 12.00) {
                 mentBadge.textContent = "Bien (Encouragements)";
-                mentBadge.style.background = "#fef3c7";
-                mentBadge.style.color = "var(--warning)";
+                mentBadge.style.background = "#fef3c7"; mentBadge.style.color = "var(--warning)";
             } else if (moyenneAnnuelle >= 10.00) {
                 mentBadge.textContent = "Passable";
-                mentBadge.style.background = "#f1f5f9";
-                mentBadge.style.color = "var(--text-muted)";
+                mentBadge.style.background = "#f1f5f9"; mentBadge.style.color = "var(--text-muted)";
             } else {
                 mentBadge.textContent = "Insuffisant (Blâme de travail)";
-                mentBadge.style.background = "#fee2e2";
-                mentBadge.style.color = "var(--danger)";
+                mentBadge.style.background = "#fee2e2"; mentBadge.style.color = "var(--danger)";
             }
 
-            // Faire défiler l'écran vers le panneau de résultat sur smartphone
             panel.scrollIntoView({ behavior: 'smooth' });
         }
 
-        function reinitialiserToutDonnees() {
-            if(confirm("Attention ! Tu vas effacer définitivement toutes les notes de toutes les classes enregistrées dans ce téléphone. Continuer ?")) {
-                localStorage.removeItem('Mmes_Storage_v2');
-                DonneesScolaires = {
-                    classeActive: "6eme",
-                    serieActive: "A",
-                    notes: {}
-                };
-                document.getElementById("classe").value = "6eme";
-                initialiserNiveau();
+        // =========================================================================
+        // MODULE SIMULATEUR D'EXAMENS D'ÉTAT (BAC / BEPC)
+        // =========================================================================
+        function determinerexEpreuveType() {
+            const classe = getProfilActif().classeActive;
+            const serie = getProfilActif().serieActive;
+
+            if (classe === "3eme") return "3eme";
+            if (classe === "terminale") {
+                if (serie.startsWith("A")) return "terminaleA";
+                if (serie === "C") return "terminaleC";
+                return "terminaleD";
+            }
+            return null;
+        }
+
+        function genererTableauSimulateur() {
+            const typeExam = determinerexEpreuveType();
+            const corps = document.getElementById("corps-simulateur");
+            const titre = document.getElementById("sim-titre-examen");
+            const profil = getProfilActif();
+
+            if (!typeExam) {
+                titre.textContent = "Simulateur indisponible";
+                corps.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">
+                    Le simulateur d'examen requiert d'activer d'abord une classe à examen (3ème ou Terminale) dans l'onglet Notes & Suivi.
+                </td></tr>`;
+                document.getElementById("sim-total-points").textContent = "--";
+                document.getElementById("sim-seuil-admissibilite").textContent = "";
+                document.getElementById("sim-badge-status").className = "badge nc";
+                document.getElementById("sim-badge-status").textContent = "Désactivé";
+                document.getElementById("sim-badge-mention").style.display = "none";
+                return;
+            }
+
+            const examConfig = STRUCTURES_EXAMENS[typeExam];
+            titre.textContent = `Simulateur : ${examConfig.nom}`;
+            document.getElementById("sim-seuil-admissibilite").textContent = `Seuil d'admissibilité : ${examConfig.seuil} points`;
+            
+            corps.innerHTML = "";
+
+            examConfig.epreuves.forEach((epreuve, i) => {
+                let keyStorage = `${typeExam}_sim_${epreuve.nom}`;
+                let noteSauvegardee = profil.simNotes[keyStorage] || "";
+
+                let r = document.createElement("tr");
+                r.innerHTML = `
+                    <td><strong>${epreuve.nom}</strong></td>
+                    <td><span id="sim-coef-val-${i}">${epreuve.coef}</span></td>
+                    <td><input type="number" id="sim-note-input-${i}" step="0.5" min="0" max="20" placeholder="00.00" value="${noteSauvegardee}" oninput="calculerAnalyseSimulation('${typeExam}', ${i}, '${keyStorage}', this.value)"></td>
+                    <td id="sim-subtotal-${i}" style="font-weight:700; color:var(--primary);">0.00</td>
+                `;
+                corps.appendChild(r);
+                
+                if(noteSauvegardee !== "") {
+                    let points = parseFloat(noteSauvegardee) * epreuve.coef;
+                    document.getElementById(`sim-subtotal-${i}`).textContent = points.toFixed(2);
+                }
+            });
+
+            executerSyntheseSim(typeExam);
+        }
+
+        function calculerAnalyseSimulation(typeExam, index, key, valeur) {
+            const profil = getProfilActif();
+            const subtotalCell = document.getElementById(`sim-subtotal-${index}`);
+            const coef = parseFloat(document.getElementById(`sim-coef-val-${index}`).textContent);
+
+            if (valeur.trim() === "") {
+                delete profil.simNotes[key];
+                subtotalCell.textContent = "0.00";
+            } else {
+                let n = parseFloat(valeur);
+                if (!isNaN(n) && n >= 0 && n <= 20) {
+                    profil.simNotes[key] = valeur;
+                    subtotalCell.textContent = (n * coef).toFixed(2);
+                }
+            }
+            sauvegarderSysteme();
+            executerSyntheseSim(typeExam);
+        }
+
+        function executerSyntheseSim(typeExam) {
+            const examConfig = STRUCTURES_EXAMENS[typeExam];
+            const profil = getProfilActif();
+            let cumulPoints = 0;
+            let toutesRemplies = true;
+
+            examConfig.epreuves.forEach((epreuve) => {
+                let keyStorage = `${typeExam}_sim_${epreuve.nom}`;
+                let note = profil.simNotes[keyStorage];
+                if (note) {
+                    cumulPoints += parseFloat(note) * epreuve.coef;
+                } else {
+                    toutesRemplies = false;
+                }
+            });
+
+            document.getElementById("sim-total-points").textContent = cumulPoints.toFixed(1);
+
+            const statusBadge = document.getElementById("sim-badge-status");
+            const mentionBadge = document.getElementById("sim-badge-mention");
+
+            if (cumulPoints === 0) {
+                statusBadge.textContent = "Aucune note";
+                statusBadge.className = "badge nc";
+                mentionBadge.style.display = "none";
+                return;
+            }
+
+            // Calcul des coefficients globaux pour ramener la moyenne sur 20
+            let coefTotal = examConfig.epreuves.reduce((acc, ep) => acc + ep.coef, 0);
+            let moyenneEquivalente = cumulPoints / coefTotal;
+
+            if (cumulPoints >= examConfig.seuil) {
+                statusBadge.textContent = toutesRemplies ? "DIPLÔME ADMIS ✔" : "ADMISSIBLE (Provisoire)";
+                statusBadge.className = "badge pass";
+                
+                mentionBadge.style.display = "inline-block";
+                if (moyenneEquivalente >= 16) {
+                    mentionBadge.textContent = "Mention TRÈS BIEN"; mentionBadge.style.background = "#d1fae5"; mentionBadge.style.color = "var(--success)";
+                } else if (moyenneEquivalente >= 14) {
+                    mentionBadge.textContent = "Mention BIEN"; mentionBadge.style.background = "#eff6ff"; mentionBadge.style.color = "var(--info)";
+                } else if (moyenneEquivalente >= 12) {
+                    mentionBadge.textContent = "Mention ASSEZ BIEN"; mentionBadge.style.background = "#fef3c7"; mentionBadge.style.color = "var(--warning)";
+                } else {
+                    mentionBadge.textContent = "Mention PASSABLE"; mentionBadge.style.background = "#f1f5f9"; mentionBadge.style.color = "var(--text-muted)";
+                }
+            } else {
+                statusBadge.textContent = toutesRemplies ? "REFUSÉ ✘" : "EN RECUL (Sous le seuil)";
+                statusBadge.className = "badge fail";
+                mentionBadge.style.display = "none";
             }
         }
 
-        // Démarrage automatique
-        verifierSauvegardeExistante();
-    </script>
+        // =========================================================================
+        // ENGINE MULTI-PROFILS : GESTION DES IDENTITÉS SCOLAIRES
+        // =========================================================================
+        function rafraichirProfilsInterface() {
+            const container = document.getElementById("liste-profils-container");
+            container.innerHTML = "";
+
+            Object.keys(SystemState.profils).forEach(id => {
+                const p = SystemState.profils[id];
+                let div = document.createElement("div");
+                div.className = `profile-card ${id === SystemState.profilActifId ? 'active' : ''}`;
+                div.setAttribute("onclick", `activerProfil('${id}')`);
+
+                // Compter le nombre de notes enregistrées pour donner une info sur le profil
+                let nbNotes = Object.keys(p.notes).length;
+
+                div.innerHTML = `
+                    <h3>${p.nom}</h3>
+                    <p>Classe de suivi : ${p.classeActive} (${p.serieActive})</p>
+                    <p style="margin-top: 5px; font-size: 0.75rem; color: var(--text-muted);">${nbNotes} note(s) en mémoire</p>
+                `;
+
+                // Empêcher la suppression de l'unique profil restant
+                if (Object.keys(SystemState.profils).length > 1) {
+                    div.innerHTML += `<button class="delete-profile-btn" onclick="supprimerProfil('${id}', event)">Supprimer</button>`;
+                }
+
+                container.appendChild(div);
+            });
+        }
+
+        function creerProfil() {
+            const input = document.getElementById("nouveau-nom-profil");
+            let nom = input.value.trim();
+
+            if (nom === "") {
+                alert("Veuillez saisir un nom valide pour le nouveau profil.");
+                return;
+            }
+
+            let uid = "id_" + Date.now();
+            SystemState.profils[uid] = {
+                id: uid,
+                nom: nom,
+                classeActive: "6eme",
+                serieActive: "Général",
+                notes: {},
+                simNotes: {}
+            };
+
+            SystemState.profilActifId = uid;
+            input.value = "";
+            sauvegarderSysteme();
+            rafraichirProfilsInterface();
+            
+            document.getElementById("classe").value = "6eme";
+            initialiserNiveau();
+            alert(`Profil de [${nom}] créé avec succès !`);
+        }
+
+        function activerProfil(id) {
+            SystemState.profilActifId = id;
+            sauvegarderSysteme();
+            rafraichirProfilsInterface();
+            
+            const profil = getProfilActif();
+            document.getElementById("classe").value = profil.classeActive;
+            initialiserNiveau(true);
+        }
+
+        function supprimerProfil(id, e) {
+            e.stopPropagation(); // Évite d'activer le profil avant de le détruire
+            if (id === SystemState.profilActifId) {
+                alert("Impossible de supprimer le profil actif. Basculez d'abord sur un autre élève.");
+                return;
+            }
+
+            if (confirm(`Êtes-vous certain de vouloir anéantir définitivement toutes les notes de ce profil ?`)) {
+                delete SystemState.profils[id];
+                sauvegarderSysteme();
+                rafraichirProfilsInterface();
+            }
+        }
+
+        function reinitialiserToutDonnees() {
+            if (confirm("💥 ALERTE CRITIQUE : Cette opération va détruire l'intégralité des profils, des notes d'interrogations, des devoirs et des simulations de ce navigateur. Continuer ?")) {
+                localStorage.removeItem('Mmes_Pro_System_v3');
+                SystemState = {
+                    profils: { "default_id": { id: "default_id", nom: "Johan Dante", classeActive: "6eme", serieActive: "Général", notes: {}, simNotes: {} } },
+                    profilActifId: "default_id",
+                    themeActif: "light"
+                };
+                sauvegarderSysteme();
+                location.reload();
+            }
+        }
+
+        // Lancement général au chargement du DOM
+        window.onload = chargerSysteme;
+</script>
 </body>
 </html>
+
